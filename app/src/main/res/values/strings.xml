@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">时间的枪</string>
+
+    <string name="timing">计时</string>
+    <string name="statistic">统计</string>
+    <string name="timeline">时间轴</string>
+    <string name="settings">设置</string>
+</resources>

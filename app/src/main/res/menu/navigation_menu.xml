@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/drawer_home"
+            android:checked="true"
+            android:checkable="true"
+            android:title="@string/timing" />
+
+        <item
+            android:id="@+id/drawer_psy"
+            android:checkable="true"
+            android:title="@string/statistic"
+            />
+
+        <item
+            android:id="@+id/drawer_recommend"
+            android:checkable="true"
+            android:title="@string/timeline"
+            />
+
+        <item
+            android:id="@+id/drawer_film"
+            android:checkable="true"
+            android:title="@string/settings"
+            />
+
+
+    </group>
+</menu>

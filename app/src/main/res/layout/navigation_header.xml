@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/navigation_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.willing.android.timeofgun.view.CircleImageView
+            android:id="@+id/userPic"
+            app:src="@drawable/test"
+            android:layout_gravity="start"
+            app:border_color="#00ff00"
+            app:border_width="1dp"
+            app:radius="40dp"
+            android:layout_margin="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:text="Willing"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/userPic"
+            android:layout_alignLeft="@+id/userPic"
+            android:layout_alignStart="@+id/userPic" />
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>
