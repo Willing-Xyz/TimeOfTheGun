@@ -27,6 +27,8 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.bmob.v3.BmobUser;
+
 /**
  *
  */
@@ -112,15 +114,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // 判断用户是否已登录
-//                BmobUser user = BmobUser.getCurrentUser(MainActivity.this);
-//                if (user != null)
-//                {
-//                    // 已登录
-//                    mDrawer.closeDrawer(GravityCompat.START);
-//                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
-//                    startActivity(intent);
-//                }
-//                else
+                BmobUser user = BmobUser.getCurrentUser(MainActivity.this);
+                if (user != null)
+                {
+                    // 已登录
+                    mDrawer.closeDrawer(GravityCompat.START);
+                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                    startActivity(intent);
+                }
+                else
                 {
                     // 未登录
                     mDrawer.closeDrawer(GravityCompat.START);

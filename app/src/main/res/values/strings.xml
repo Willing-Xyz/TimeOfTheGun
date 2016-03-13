@@ -24,6 +24,8 @@
     <string name="hint_input_password">请输入密码</string>
     <string name="login_success">登录成功</string>
     <string name="login_fail">登录失败</string>
+    <string name="email">邮箱: </string>
+    <string name="phone_number">手机号: </string>
 
 
 </resources>
