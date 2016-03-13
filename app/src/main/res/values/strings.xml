@@ -5,5 +5,25 @@
     <string name="statistic">统计</string>
     <string name="timeline">时间轴</string>
     <string name="settings">设置</string>
+    <string name="signup">注册</string>
+    <string name="login">登录</string>
+    <string name="tourist_try"><![CDATA[游客试用 >>>]]></string>
+    <string name="hint_login_password">请设置登录密码（不少于6位）</string>
+    <string name="hint_account">请输入邮箱或手机号</string>
+    <string name="hint_account_email">请输入邮箱(用于找回密码)</string>
+    <string name="hint_account_phone">请输入手机号码</string>
+    <string name="error_input_corrent_email">请输入正确的邮箱地址</string>
+    <string name="error_password_too_short">密码至少六位</string>
+    <string name="use_emial_signup">用邮箱注册</string>
+    <string name="input_verify_code">请输入验证码</string>
+    <string name="send_verify_code">发送验证码</string>
+    <string name="input_username">请输入用户名</string>
+    <string name="signup_success">注册成功</string>
+    <string name="signup_fail">注册失败</string>
+    <string name="error_username_not_null">用户名不能为空</string>
+    <string name="hint_input_password">请输入密码</string>
+    <string name="login_success">登录成功</string>
+    <string name="login_fail">登录失败</string>
+
 
 </resources>

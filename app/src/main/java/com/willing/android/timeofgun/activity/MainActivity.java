@@ -1,5 +1,6 @@
 package com.willing.android.timeofgun.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,12 +13,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.fragment.SettingsFragment;
 import com.willing.android.timeofgun.fragment.StatisticFragment;
 import com.willing.android.timeofgun.fragment.TimelineFragment;
 import com.willing.android.timeofgun.fragment.TimingFragment;
+import com.willing.android.timeofgun.view.CircleImageView;
 
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
@@ -39,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     Map<String, SoftReference<Fragment>> mCacheFragmentMap;
+    private TextView mUserName;
+    private CircleImageView mUserPic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         mNavigation = (NavigationView) findViewById(R.id.navigation);
         mDrawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        mUserPic = (CircleImageView) mNavigation.getHeaderView(0).findViewById(R.id.userPic);
+        mUserName = (TextView) mNavigation.getHeaderView(0).findViewById(R.id.userName);
 
         setSupportActionBar(mToolBar);
 
@@ -96,6 +104,29 @@ public class MainActivity extends AppCompatActivity {
                 mToolBar.setTitle(item.getTitle());
 
                 return true;
+            }
+        });
+
+        mUserPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // 判断用户是否已登录
+//                BmobUser user = BmobUser.getCurrentUser(MainActivity.this);
+//                if (user != null)
+//                {
+//                    // 已登录
+//                    mDrawer.closeDrawer(GravityCompat.START);
+//                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
+//                    startActivity(intent);
+//                }
+//                else
+                {
+                    // 未登录
+                    mDrawer.closeDrawer(GravityCompat.START);
+                    Intent intent = new Intent(MainActivity.this, LoginOrSignupActivity.class);
+                    startActivity(intent);
+                }
             }
         });
     }
