@@ -7,24 +7,28 @@
 
         <item
             android:id="@+id/drawer_home"
+            android:icon="@drawable/timing_default"
             android:checked="true"
             android:checkable="true"
             android:title="@string/timing" />
 
         <item
-            android:id="@+id/drawer_psy"
+            android:id="@+id/drawer_statistic"
+            android:icon="@drawable/statistic_default"
             android:checkable="true"
             android:title="@string/statistic"
             />
 
         <item
-            android:id="@+id/drawer_recommend"
+            android:id="@+id/drawer_timeline"
+            android:icon="@drawable/timeline_default"
             android:checkable="true"
             android:title="@string/timeline"
             />
 
         <item
-            android:id="@+id/drawer_film"
+            android:id="@+id/drawer_settings"
+            android:icon="@drawable/settings_default"
             android:checkable="true"
             android:title="@string/settings"
             />
