@@ -118,4 +118,37 @@ public class DbHelper extends SQLiteOpenHelper{
 
         return values;
     }
+
+    private static Catelog generateCatelog(Cursor cursor)
+    {
+        Catelog catelog = new Catelog();
+
+        catelog.setName(cursor.getString(cursor.getColumnIndex(DbHelper.CATELOG_NAME)));
+        catelog.setColor(cursor.getInt(cursor.getColumnIndex(DbHelper.CATELOG_COLOR)));
+        catelog.setId(cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)));
+        catelog.setCatelogId(cursor.getLong(cursor.getColumnIndex(DbHelper.CATELOG_ID)));
+
+        return catelog;
+    }
+
+    // 从数据库中任一查找一个Catelog
+    public static Catelog findAnyCatelogFromDb(Context context)
+    {
+
+        DbHelper helper = new DbHelper(context);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.query(DbHelper.CATELOG_TABLE_NAME,
+                new String[]{BaseColumns._ID, DbHelper.CATELOG_NAME, DbHelper.CATELOG_COLOR, DbHelper.CATELOG_ID},
+                null, null, null, null, null);
+
+        Catelog catelog = new Catelog();
+        if (cursor != null && cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+
+            catelog = generateCatelog(cursor);
+        }
+
+        return catelog;
+    }
 }

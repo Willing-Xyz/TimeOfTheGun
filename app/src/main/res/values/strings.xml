@@ -38,4 +38,6 @@
     <string name="catelogName_cannot_null">类别名字不能为空</string>
     <string name="catelogName_isExisted">该类别名称已存在</string>
     <string name="must_select_color">必须选择一个颜色</string>
+    <string name="click_for_new_catelog">点击创建新的类别</string>
+    <string name="please_new_catelog">请选择或创建一个类别</string>
 </resources>
