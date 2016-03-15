@@ -55,6 +55,12 @@
             android:name=".activity.UserActivity"
             >
         </activity>
+        <activity android:name=".activity.CatelogPickerActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            />
+        <activity android:name=".activity.AddCatelogActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            />
     </application>
 
 </manifest>

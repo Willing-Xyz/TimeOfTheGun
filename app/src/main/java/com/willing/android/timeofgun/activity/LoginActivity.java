@@ -68,6 +68,8 @@ public class LoginActivity extends AppCompatActivity{
                     public void onSuccess() {
                         Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
 
+                        // TODO: 2016/3/15 处理未上传和未下载的数据
+
                         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);

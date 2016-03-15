@@ -26,6 +26,16 @@
     <string name="login_fail">登录失败</string>
     <string name="email">邮箱: </string>
     <string name="phone_number">手机号: </string>
+    <string name="init_time">00:00:00</string>
 
-
+    <string name="start_text">开始</string>
+    <string name="stop_text">结束</string>
+    <string name="pick_catelog">选择类别</string>
+    <string name="select_color">选择颜色</string>
+    <string name="catelogName">类别名称</string>
+    <string name="add_catelog">增加类别</string>
+    <string name="保存">保存</string>
+    <string name="catelogName_cannot_null">类别名字不能为空</string>
+    <string name="catelogName_isExisted">该类别名称已存在</string>
+    <string name="must_select_color">必须选择一个颜色</string>
 </resources>

@@ -1,22 +1,80 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textView"
-        android:layout_gravity="center_horizontal" />
+        android:id="@+id/tv_timeShow"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:background="@android:color/white"
+        android:textColor="@android:color/black"
+        android:textSize="80sp"
+        android:text="@string/init_time"
+        />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView2"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.63" />
+    <include layout="@layout/seperator" />
+
+    <RelativeLayout
+        android:id="@+id/rl_event"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="5dp"
+            >
+
+            <View
+                android:id="@+id/iv_eventColor"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center_vertical"
+                />
+
+            <TextView
+                android:id="@+id/tv_eventName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                android:background="@android:color/transparent"
+                android:text="test"
+                />
+
+        </LinearLayout>
+
+        <include layout="@layout/right_arrow" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/seperator" />
+
+    <com.willing.android.timeofgun.view.StartStopButton
+        android:id="@+id/start_stop_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:radius="60dp"
+        app:startText="@string/start_text"
+        app:stopText="@string/stop_text"
+        app:startColor="#00ff00"
+        app:stopColor="#ff0000"
+        android:color="#ffffff"
+        android:textSize="30sp"
+        app:circleThickness="1dp"
+        android:background="@android:color/white"
+
+        />
+
 </LinearLayout>

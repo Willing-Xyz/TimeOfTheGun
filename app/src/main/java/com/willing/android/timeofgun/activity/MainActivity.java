@@ -21,13 +21,12 @@ import com.willing.android.timeofgun.fragment.SettingsFragment;
 import com.willing.android.timeofgun.fragment.StatisticFragment;
 import com.willing.android.timeofgun.fragment.TimelineFragment;
 import com.willing.android.timeofgun.fragment.TimingFragment;
+import com.willing.android.timeofgun.model.User;
 import com.willing.android.timeofgun.view.CircleImageView;
 
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
-
-import cn.bmob.v3.BmobUser;
 
 /**
  *
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // 判断用户是否已登录
-                BmobUser user = BmobUser.getCurrentUser(MainActivity.this);
+                User user = User.getCurrentUser(MainActivity.this, User.class);
                 if (user != null)
                 {
                     // 已登录

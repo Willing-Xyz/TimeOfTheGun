@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="start_stop_button">
+        <attr name="android:radius"/>
+        <attr name="startText" format="string" />
+        <attr name="stopText" format="string" />
+        <attr name="startColor" format="color" />
+        <attr name="stopColor" format="color" />
+        <attr name="android:textSize"/>
+        <attr name="android:color" />
+        <attr name="circleThickness" format="dimension" />
+
+        
+    </declare-styleable>
+</resources>
