@@ -18,11 +18,8 @@ import android.widget.ListView;
 
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.adapter.CatelogAdapter;
-import com.willing.android.timeofgun.event.AddCatelogEvent;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.utils.DbHelper;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.SoftReference;
 
@@ -123,6 +120,10 @@ public class CatelogPickerActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         }
+        if (id == android.R.id.home)
+        {
+            finish();
+        }
         return false;
     }
 
@@ -136,13 +137,6 @@ public class CatelogPickerActivity extends AppCompatActivity
                 // TODO: 2016/3/15 处理返回结果
             }
         }
-    }
-
-    @Subscribe
-    public void onAddCatelog(AddCatelogEvent event)
-    {
-        mLoadCatelogTask = new LoadCatelogTask(this, mCatelogListView);
-        mLoadCatelogTask.execute();
     }
 
     private static class LoadCatelogTask extends AsyncTask<Void, Void, Cursor>

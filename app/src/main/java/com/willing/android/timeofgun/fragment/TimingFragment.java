@@ -15,18 +15,22 @@ import android.widget.Toast;
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.activity.CatelogPickerActivity;
 import com.willing.android.timeofgun.model.Catelog;
+import com.willing.android.timeofgun.model.Event;
+import com.willing.android.timeofgun.model.EventBmob;
+import com.willing.android.timeofgun.model.User;
 import com.willing.android.timeofgun.utils.DateUtils;
 import com.willing.android.timeofgun.utils.DbHelper;
+import com.willing.android.timeofgun.utils.FileUtils;
 import com.willing.android.timeofgun.utils.Utils;
 import com.willing.android.timeofgun.view.StartStopButton;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Calendar;
+
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.listener.SaveListener;
 
 /**
  *
@@ -48,6 +52,7 @@ import java.util.Calendar;
  2.
  * Created by Willing on 2016/3/13.
  */
+
 public class TimingFragment extends BaseFragment implements StartStopButton.StateChangeListener
 {
 
@@ -55,9 +60,8 @@ public class TimingFragment extends BaseFragment implements StartStopButton.Stat
 
     private static final String STATE_STARTED = "started";
     private static final String STATE_CATELOG = "catelog";
-    private static final String CURRENT_CATELOG_FILENAME = "cur_catelog";
-    private static final String START_STATE_FILENAME = "start_state";
-    private static final String START_TIME_FILENAME = "start_time";
+    private static final String EVENT_FOR_SERVER = "event_for_server";
+
 
     private View mRootView;
 
@@ -101,6 +105,8 @@ public class TimingFragment extends BaseFragment implements StartStopButton.Stat
 
         mHandler = new Handler();
         mUpdateTimeRunnable = new UpdateTimeRunnable();
+        mCatelog = new Catelog();
+        mStartTime = Calendar.getInstance();
 
         restoreState(savedInstanceState);
 
@@ -139,7 +145,13 @@ public class TimingFragment extends BaseFragment implements StartStopButton.Stat
         // 验证当前Catelog是否有效
         if (!DbHelper.isCatelogNameExisted(getActivity(), mCatelog.getName()))
         {
-
+            Catelog catelog = DbHelper.findAnyCatelogFromDb(getActivity());
+            if (catelog != null)
+            {
+                mCatelog = catelog;
+                mCatelogColorView.setBackgroundColor(catelog.getColor());
+                mCatelogNameTextView.setText(catelog.getName());
+            }
         }
     }
 
@@ -156,11 +168,15 @@ public class TimingFragment extends BaseFragment implements StartStopButton.Stat
         {
             mCatelog = data.getParcelableExtra(CatelogPickerActivity.EXTRA_CATELOG);
 
+            if (mCatelogColorView.getVisibility() == View.GONE)
+            {
+                mCatelogColorView.setVisibility(View.VISIBLE);
+            }
             mCatelogNameTextView.setText(mCatelog.getName());
             mCatelogColorView.setBackgroundColor(mCatelog.getColor());
 
             // 当 当前Catelog改变时，存储到文件中
-            saveCurrentCatelog();
+            FileUtils.saveCurrentCatelog(getActivity(), mCatelog);
 
             mStartStopButton.setStarted(false);
             mStarted = false;
@@ -177,21 +193,25 @@ public class TimingFragment extends BaseFragment implements StartStopButton.Stat
         super.onSaveInstanceState(outState);
     }
 
+
     @Override
     public void stateChanged(boolean started) {
         mStarted = started;
-        saveStartState();
+        FileUtils.saveStartState(getActivity(), mStarted);
         if (started)
         {
-            if (mCatelog == null)
+            if (mCatelog.getName() == "")
             {
                 Toast.makeText(getActivity(), R.string.please_new_catelog, Toast.LENGTH_LONG).show();
+                mStartStopButton.setStartStateJust(false);
+                mStarted = false;
+                FileUtils.saveStartState(getActivity(), false);
                 return;
             }
             mTimeShowTextView.setText(R.string.init_time);
 
             mStartTime = Calendar.getInstance();
-            saveStartTime();
+            FileUtils.saveStartTime(getActivity(), mStartTime.getTimeInMillis());
 
 
             mHandler.postDelayed(mUpdateTimeRunnable, 1000);
@@ -199,41 +219,130 @@ public class TimingFragment extends BaseFragment implements StartStopButton.Stat
         else
         {
             mHandler.removeCallbacks(mUpdateTimeRunnable);
-            // 保存事件到数据库
+
+            if (mCatelog.getName() == "")
+            {
+                return;
+            }
+
+            new Thread()
+            {
+                @Override
+                public void run() {
+                    Event event = new Event();
+                    event.setStartTime(mStartTime.getTimeInMillis());
+                    event.setStopTime(Calendar.getInstance().getTimeInMillis());
+                    event.setCatelogId(mCatelog.getCatelogId());
+                    addEvent(event);
+                }
+            }.start();
         }
 
     }
 
+    private void addEvent(final Event event) {
+
+        // 保存到本地
+        DbHelper.addEvent(getActivity(), mStartTime.getTimeInMillis(),
+                Calendar.getInstance().getTimeInMillis(), mCatelog.getCatelogId());
+        // 保存到服务器
+        User user = BmobUser.getCurrentUser(getActivity(), User.class);
+        if (user != null) {
+            EventBmob eventBmob = new EventBmob();
+            eventBmob.setCatelogId(event.getCatelogId());
+            eventBmob.setStartTime(event.getStartTime());
+            eventBmob.setStopTime(event.getStopTime());
+            eventBmob.save(getActivity(), new SaveListener() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onFailure(int i, String s) {
+                    // 保存到待处理列表
+                    addEventForServer(event);
+                }
+            });
+        }
+        else
+        {
+            addEventForServer(event);
+        }
+    }
+
+    // 上传服务器失败时，保存到待处理列表
+    private void addEventForServer(final Event event) {
+
+        new Thread(){
+            @Override
+            public void run()
+            {
+                DataOutputStream out = null;
+                try {
+                    out = new DataOutputStream(getActivity().openFileOutput(EVENT_FOR_SERVER, Context.MODE_APPEND));
+
+                    out.writeLong(event.getStartTime());
+                    out.writeLong(event.getStopTime());
+                    out.writeLong(event.getCatelogId());
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    Utils.closeIO(out);
+                }
+            }
+        }.start();
+    }
+
     private void restoreState(Bundle savedInstanceState) {
 
-        if (savedInstanceState == null)
-        {
+        if (savedInstanceState == null) {
             // 首先从文件中获取当前Catelog
             // 如果不存在，则从数据库中随便查找一个
-            mCatelog = restoreCurrentCatelog();
-            if (mCatelog == null)
-            {
-                mCatelog = DbHelper.findAnyCatelogFromDb(getActivity());
-                if (mCatelog == null)
-                {
+            Catelog catelog = null;
+            catelog = FileUtils.restoreCurrentCatelog(getActivity());
+            if (catelog == null) {
+                catelog = DbHelper.findAnyCatelogFromDb(getActivity());
+                if (catelog == null) {
                     mCatelogColorView.setVisibility(View.GONE);
                     mCatelogNameTextView.setText(R.string.click_for_new_catelog);
                     return;
                 }
                 else
                 {
-                    saveCurrentCatelog();
+                    FileUtils.saveCurrentCatelog(getActivity(), catelog);
                 }
             }
+            else
+            {
+                // 验证当前Catelog是否有效
+                if (!DbHelper.isCatelogNameExisted(getActivity(), catelog.getName()))
+                {
+                    catelog = DbHelper.findAnyCatelogFromDb(getActivity());
+                    if (catelog != null)
+                    {
+                        mCatelogColorView.setBackgroundColor(catelog.getColor());
+                        mCatelogNameTextView.setText(catelog.getName());
+                    }
+                }
+            }
+            if (catelog != null)
+            {
+                mCatelog = catelog;
+            }
 
-            mStarted = restoreStartState();
+            mStarted = FileUtils.restoreStartState(getActivity());
             if (mStarted)
             {
                 if (mStartTime == null)
                 {
                     mStartTime = Calendar.getInstance();
                 }
-                mStartTime.setTimeInMillis(restoreStartTime());
+                mStartTime.setTimeInMillis(FileUtils.restoreStartTime(getActivity()));
                 mHandler.post(mUpdateTimeRunnable);
             }
 
@@ -251,151 +360,6 @@ public class TimingFragment extends BaseFragment implements StartStopButton.Stat
         mCatelogColorView.setBackgroundColor(mCatelog.getColor());
     }
 
-    // 存储计时开始时间
-    private void saveStartTime()
-    {
-        DataOutputStream dataOut = null;
-        try
-        {
-            dataOut = new DataOutputStream(getActivity().openFileOutput(START_TIME_FILENAME, Context.MODE_PRIVATE));
-            dataOut.writeLong(mStartTime.getTimeInMillis());
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Utils.closeIO(dataOut);
-        }
-    }
-
-    // 保存当前Catelog到文件中
-    private void saveCurrentCatelog() {
-        DataOutputStream dataOut = null;
-        try
-        {
-            OutputStream out = getActivity().openFileOutput(CURRENT_CATELOG_FILENAME, Context.MODE_PRIVATE);
-            dataOut = new DataOutputStream(out);
-
-            dataOut.writeInt(mCatelog.getId());
-            dataOut.writeInt(mCatelog.getColor());
-            dataOut.writeUTF(mCatelog.getName());
-            dataOut.writeLong(mCatelog.getCatelogId());
-
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            Utils.closeIO(dataOut);
-        }
-    }
-
-    // 从文件中恢复当前Catelog
-    private Catelog restoreCurrentCatelog() {
-        DataInputStream dataIn = null;
-        try
-        {
-            InputStream in = getActivity().openFileInput(CURRENT_CATELOG_FILENAME);
-            dataIn = new DataInputStream(in);
-
-            if (mCatelog == null)
-            {
-                mCatelog = new Catelog();
-            }
-            mCatelog.setId(dataIn.readInt());
-            mCatelog.setColor(dataIn.readInt());
-            mCatelog.setName(dataIn.readUTF());
-            mCatelog.setCatelogId(dataIn.readLong());
-
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-        finally
-        {
-            Utils.closeIO(dataIn);
-        }
-        return mCatelog;
-    }
-
-    // 存储start状态到文件中。
-    private void saveStartState()
-    {
-        DataOutputStream dataOut = null;
-        try
-        {
-            dataOut = new DataOutputStream(getActivity().openFileOutput(START_STATE_FILENAME, Context.MODE_PRIVATE));
-            dataOut.writeBoolean(mStarted);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Utils.closeIO(dataOut);
-        }
-    }
-
-
-
-    // 从文件中恢复start的状态
-    private boolean restoreStartState() {
-        DataInputStream dataIn = null;
-        try
-        {
-            InputStream in = getActivity().openFileInput(START_STATE_FILENAME);
-            dataIn = new DataInputStream(in);
-
-            mStarted = dataIn.readBoolean();
-
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-        finally
-        {
-            Utils.closeIO(dataIn);
-        }
-        return mStarted;
-    }
-
-    // 恢复计时开始时间
-    private long restoreStartTime() {
-        long startTime = 0;
-        DataInputStream dataIn = null;
-        try
-        {
-            InputStream in = getActivity().openFileInput(START_TIME_FILENAME);
-            dataIn = new DataInputStream(in);
-
-            startTime = dataIn.readLong();
-
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-        finally
-        {
-            Utils.closeIO(dataIn);
-        }
-        return startTime;
-    }
 
     private class UpdateTimeRunnable implements Runnable {
         @Override

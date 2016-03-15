@@ -141,7 +141,7 @@ public class DbHelper extends SQLiteOpenHelper{
                 new String[]{BaseColumns._ID, DbHelper.CATELOG_NAME, DbHelper.CATELOG_COLOR, DbHelper.CATELOG_ID},
                 null, null, null, null, null);
 
-        Catelog catelog = new Catelog();
+        Catelog catelog = null;
         if (cursor != null && cursor.getCount() > 0)
         {
             cursor.moveToFirst();
@@ -150,5 +150,16 @@ public class DbHelper extends SQLiteOpenHelper{
         }
 
         return catelog;
+    }
+
+    // 增加事件
+    public static void addEvent(Context context, long startTime, long stopTime, long catelogId) {
+        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DbHelper.START_TIME, startTime);
+        values.put(DbHelper.STOP_TIME, stopTime);
+        values.put(DbHelper.CATELOG_ID, catelogId);
+
+        db.insert(DbHelper.MAIN_TABLE_NAME, null, values);
     }
 }
