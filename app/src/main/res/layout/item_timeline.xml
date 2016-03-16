@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <com.willing.android.timeofgun.view.CircleView
+        android:id="@+id/circle"
+        android:color="#00ff00"
+        app:circleRadius="5dp"
+        app:lineWidth="1dp"
+        app:lineColor="#ff0000"
+        android:layout_width="50dp"
+        android:layout_height="90dp" />
+
+    <LinearLayout
+        android:layout_toRightOf="@id/circle"
+        android:orientation="vertical"
+        android:paddingRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="90dp">
+
+        <TextView
+            android:id="@+id/eventName"
+            android:text="事件名称"
+            android:paddingTop="5dp"
+            android:gravity="center|left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+
+        <com.willing.android.timeofgun.view.RectView
+            android:id="@+id/rect"
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <TextView
+            android:id="@+id/time"
+            android:text="Time"
+            android:paddingBottom="5dp"
+            android:gravity="center|left"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -162,4 +162,20 @@ public class DbHelper extends SQLiteOpenHelper{
 
         db.insert(DbHelper.MAIN_TABLE_NAME, null, values);
     }
+
+    public static Cursor queryEvent(Context context, long startDate, long stopDate) {
+        DbHelper helper = new DbHelper(context);
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        String largeStartDateSql = "select * from "
+                + MAIN_TABLE_NAME + " inner join " + CATELOG_TABLE_NAME + " on "
+                + MAIN_TABLE_NAME + "." + CATELOG_ID + "=" + CATELOG_TABLE_NAME + "." + CATELOG_ID
+                + " where " + START_TIME + " >= " + startDate;
+
+        String sql = "select * from " + "(" + largeStartDateSql + ")"
+                + " where " + STOP_TIME + " < " + stopDate
+                + ";";
+
+        return db.rawQuery(sql, null);
+    }
 }

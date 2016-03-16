@@ -12,7 +12,10 @@ import com.willing.android.timeofgun.R;
  * Created by Willing on 2016/3/13.
  */
 public class StatisticFragment extends  BaseFragment{
+
     private View mRootView;
+
+
     public static StatisticFragment getInstance()
     {
         StatisticFragment fragment = new StatisticFragment();
@@ -34,6 +37,10 @@ public class StatisticFragment extends  BaseFragment{
             mRootView = view;
         }
 
+
+
         return view;
     }
+
+
 }

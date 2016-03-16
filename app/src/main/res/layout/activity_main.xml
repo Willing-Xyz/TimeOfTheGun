@@ -20,6 +20,7 @@
             android:background="?attr/colorPrimary"
             app:title="@string/timing"
             app:titleTextColor="@android:color/white"
+            app:subtitleTextColor="@android:color/white"
             >
 
         </android.support.v7.widget.Toolbar>
