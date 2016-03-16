@@ -6,6 +6,7 @@
 
     <RelativeLayout
         android:id="@+id/select_catelog"
+        android:background="@android:color/white"
         android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -14,15 +15,22 @@
 
         <Button
             android:id="@+id/bt_catelog"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left|center_vertical"
+            android:background="@android:color/transparent"
+            android:clickable="false"
             android:paddingLeft="5dp"
-            android:background="@android:color/white"
             android:text="@string/select_catelog"
             />
 
-        <include android:id="@+id/arrow" layout="@layout/right_arrow" />
+        <include android:id="@+id/arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            layout="@layout/right_arrow" />
 
         <View
             android:id="@+id/vw_catelogColor"
@@ -38,6 +46,7 @@
 
     <RelativeLayout
         android:id="@+id/select_startTime"
+        android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -45,9 +54,10 @@
             android:id="@+id/bt_startTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="false"
             android:gravity="left|center_vertical"
             android:paddingLeft="5dp"
-            android:background="@android:color/white"
+            android:background="@android:color/transparent"
             android:text="@string/select_startTime"
             />
 
@@ -60,6 +70,7 @@
 
     <RelativeLayout
         android:id="@+id/select_stopTime"
+        android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -68,8 +79,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left|center_vertical"
+            android:clickable="false"
             android:paddingLeft="5dp"
-            android:background="@android:color/white"
+            android:background="@android:color/transparent"
             android:text="@string/select_stopTime"
             />
 
@@ -77,6 +89,13 @@
     </RelativeLayout>
 
 
+    <TextView
+        android:id="@+id/info"
+        android:textColor="#ff0000"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>

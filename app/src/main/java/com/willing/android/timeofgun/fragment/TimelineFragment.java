@@ -20,6 +20,7 @@ import java.util.Calendar;
 public class TimelineFragment extends BaseFragment{
     private View mRootView;
     private ViewPager mViewPager;
+    private TimeLinePagerAdapter mPageAdapter;
 
     public static TimelineFragment getInstance()
     {
@@ -58,8 +59,9 @@ public class TimelineFragment extends BaseFragment{
 
     private void setupListener() {
 
+        mPageAdapter = new TimeLinePagerAdapter(getActivity());
         mViewPager.setOffscreenPageLimit(1);
-        mViewPager.setAdapter(new TimeLinePagerAdapter(getActivity()));
+        mViewPager.setAdapter(mPageAdapter);
         mViewPager.setCurrentItem(Integer.MAX_VALUE);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -95,6 +97,7 @@ public class TimelineFragment extends BaseFragment{
 
         String dateAndWeek = DateUtils.formatDateAndWeek(cal.getTimeInMillis());
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(dateAndWeek);
+
     }
 
     @Override
@@ -102,5 +105,9 @@ public class TimelineFragment extends BaseFragment{
         super.onStop();
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(null);
+
     }
+
+
+
 }

@@ -29,4 +29,5 @@ dependencies {
     compile files('libs/okio-1.4.0.jar')
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.larswerkman:HoloColorPicker:1.5'
+    compile project(':slideDateTimePicker')
 }

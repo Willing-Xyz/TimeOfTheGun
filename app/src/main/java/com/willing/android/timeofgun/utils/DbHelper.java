@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import com.willing.android.timeofgun.event.AddCatelogEvent;
+import com.willing.android.timeofgun.event.AddEventEvent;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.Event;
 
@@ -167,6 +168,8 @@ public class DbHelper extends SQLiteOpenHelper{
         values.put(DbHelper.CATELOG_ID, catelogId);
 
         db.insert(DbHelper.MAIN_TABLE_NAME, null, values);
+
+        EventBus.getDefault().postSticky(new AddEventEvent());
     }
 
     public static Cursor queryEvent(Context context, long startDate, long stopDate) {

@@ -10,11 +10,10 @@ import java.util.Date;
  * Created by Willing on 2016/3/15.
  */
 public class DateUtils {
-    // 根据当前时间和开始时间得到字符串表示
-    public static String formatDistanceTime(long startTime) {
-        Date nowDate = new Date();
 
-        long distance = nowDate.getTime() - startTime;
+    public static String formatDistanceTime(long startTime, long stopTime)
+    {
+        long distance = stopTime - startTime;
 
         distance /= 1000;
         int second = (int) (distance % 60);
@@ -23,6 +22,11 @@ public class DateUtils {
         int hour = (int) (distance /= 60);
 
         return String.format("%02d:%02d:%02d", hour, minute, second);
+    }
+
+    // 根据当前时间和开始时间得到字符串表示
+    public static String formatDistanceTime(long startTime) {
+        return formatDistanceTime(startTime, new Date().getTime());
     }
 
     // 获取一天的开始时间
@@ -169,5 +173,13 @@ public class DateUtils {
                 break;
         }
         return weekStr;
+    }
+
+    public static String formatDateAndTime(long time) {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        Date date = new Date(time);
+        return format.format(date);
     }
 }
