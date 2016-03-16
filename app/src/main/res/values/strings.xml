@@ -41,4 +41,9 @@
     <string name="click_for_new_catelog">点击创建新的类别</string>
     <string name="please_new_catelog">请选择或创建一个类别</string>
     <string name="no_record">未记录</string>
+    <string name="click_for_add">点击添加</string>
+    <string name="add_event">添加事件</string>
+    <string name="select_catelog">选择类别</string>
+    <string name="select_startTime">选择开始时间</string>
+    <string name="select_stopTime">选择结束时间</string>
 </resources>

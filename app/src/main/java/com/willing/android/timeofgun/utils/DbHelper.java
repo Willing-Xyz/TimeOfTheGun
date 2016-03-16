@@ -9,6 +9,7 @@ import android.provider.BaseColumns;
 
 import com.willing.android.timeofgun.event.AddCatelogEvent;
 import com.willing.android.timeofgun.model.Catelog;
+import com.willing.android.timeofgun.model.Event;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -153,7 +154,12 @@ public class DbHelper extends SQLiteOpenHelper{
     }
 
     // 增加事件
-    public static void addEvent(Context context, long startTime, long stopTime, long catelogId) {
+    public static void addEvent(Context context, Event event) {
+
+        long startTime = event.getStartTime();
+        long stopTime = event.getStopTime();
+        long catelogId = event.getCatelogId();
+
         SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DbHelper.START_TIME, startTime);

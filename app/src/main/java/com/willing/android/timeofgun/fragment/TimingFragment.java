@@ -1,7 +1,6 @@
 package com.willing.android.timeofgun.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,21 +15,13 @@ import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.activity.CatelogPickerActivity;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.Event;
-import com.willing.android.timeofgun.model.EventBmob;
-import com.willing.android.timeofgun.model.User;
 import com.willing.android.timeofgun.utils.DateUtils;
 import com.willing.android.timeofgun.utils.DbHelper;
+import com.willing.android.timeofgun.utils.EventUtils;
 import com.willing.android.timeofgun.utils.FileUtils;
-import com.willing.android.timeofgun.utils.Utils;
 import com.willing.android.timeofgun.view.StartStopButton;
 
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Calendar;
-
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.listener.SaveListener;
 
 /**
  *
@@ -60,7 +51,7 @@ public class TimingFragment extends BaseFragment implements StartStopButton.Stat
 
     private static final String STATE_STARTED = "started";
     private static final String STATE_CATELOG = "catelog";
-    private static final String EVENT_FOR_SERVER = "event_for_server";
+
 
 
     private View mRootView;
@@ -234,70 +225,14 @@ public class TimingFragment extends BaseFragment implements StartStopButton.Stat
                     event.setStartTime(mStartTime.getTimeInMillis());
                     event.setStopTime(Calendar.getInstance().getTimeInMillis());
                     event.setCatelogId(mCatelog.getCatelogId());
-                    addEvent(event);
+                    EventUtils.addEvent(getActivity(), event);
                 }
             }.start();
         }
 
     }
 
-    private void addEvent(final Event event) {
 
-        // 保存到本地
-        DbHelper.addEvent(getActivity(), mStartTime.getTimeInMillis(),
-                Calendar.getInstance().getTimeInMillis(), mCatelog.getCatelogId());
-        // 保存到服务器
-        User user = BmobUser.getCurrentUser(getActivity(), User.class);
-        if (user != null) {
-            EventBmob eventBmob = new EventBmob();
-            eventBmob.setCatelogId(event.getCatelogId());
-            eventBmob.setStartTime(event.getStartTime());
-            eventBmob.setStopTime(event.getStopTime());
-            eventBmob.save(getActivity(), new SaveListener() {
-                @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onFailure(int i, String s) {
-                    // 保存到待处理列表
-                    addEventForServer(event);
-                }
-            });
-        }
-        else
-        {
-            addEventForServer(event);
-        }
-    }
-
-    // 上传服务器失败时，保存到待处理列表
-    private void addEventForServer(final Event event) {
-
-        new Thread(){
-            @Override
-            public void run()
-            {
-                DataOutputStream out = null;
-                try {
-                    out = new DataOutputStream(getActivity().openFileOutput(EVENT_FOR_SERVER, Context.MODE_APPEND));
-
-                    out.writeLong(event.getStartTime());
-                    out.writeLong(event.getStopTime());
-                    out.writeLong(event.getCatelogId());
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                finally {
-                    Utils.closeIO(out);
-                }
-            }
-        }.start();
-    }
 
     private void restoreState(Bundle savedInstanceState) {
 

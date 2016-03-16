@@ -1,6 +1,7 @@
 package com.willing.android.timeofgun.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.willing.android.timeofgun.R;
+import com.willing.android.timeofgun.activity.AddEventActivity;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.EventAndCatelog;
 import com.willing.android.timeofgun.utils.DateUtils;
@@ -25,14 +27,17 @@ import java.util.List;
 /**
  * Created by Willing on 2016/3/11.
  */
-public class TimeLineAdapter extends BaseAdapter{
+public class TimeLineListAdapter extends BaseAdapter{
+
+    private static final int TYPE_SHOW_EVENT = 0;
+    private static final int TYPE_ADD_EVENT = 1;
 
     private List<EventAndCatelog> mTimeEvents;
     private final Context mContext;
     private long mMaxLength = 1;
     private int mIndex;
 
-    public TimeLineAdapter(Context context, int index)
+    public TimeLineListAdapter(Context context, int index)
     {
         mContext = context;
         mIndex = index;
@@ -46,7 +51,8 @@ public class TimeLineAdapter extends BaseAdapter{
         {
             return 0;
         }
-        return mTimeEvents.size();
+        // 加1表示增加按钮
+        return mTimeEvents.size() + 1;
     }
 
     @Override
@@ -62,6 +68,20 @@ public class TimeLineAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
+        if (getItemViewType(position) == TYPE_ADD_EVENT)
+        {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.list_add_catelog, parent, false);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO: 2016/3/16 增加Event
+                    Intent intent = new Intent(mContext, AddEventActivity.class);
+                    mContext.startActivity(intent);
+                }
+            });
+            return view;
+        }
+
         ViewHolder viewHolder = null;
         if (convertView == null)
         {
@@ -90,6 +110,23 @@ public class TimeLineAdapter extends BaseAdapter{
 
 
         return convertView;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == getCount() - 1)
+        {
+            return TYPE_ADD_EVENT;
+        }
+        else
+        {
+            return TYPE_SHOW_EVENT;
+        }
     }
 
     class ViewHolder

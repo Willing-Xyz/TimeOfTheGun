@@ -61,6 +61,9 @@
         <activity android:name=".activity.AddCatelogActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             />
+        <activity android:name=".activity.AddEventActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            />
     </application>
 
 </manifest>

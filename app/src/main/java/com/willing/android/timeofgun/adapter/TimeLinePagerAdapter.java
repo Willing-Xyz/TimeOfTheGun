@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 /**
@@ -38,7 +39,6 @@ public class TimeLinePagerAdapter extends PagerAdapter {
         ListView view = null;
 
 
-
             if (mListViewCache != null)
             {
                 view = mListViewCache;
@@ -46,9 +46,19 @@ public class TimeLinePagerAdapter extends PagerAdapter {
             }
             else {
                 view = new ListView(mContext);
+                view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        // TODO: 2016/3/16 点击修改事件
+                        if (position != parent.getCount() - 1) {
+
+                        }
+
+                    }
+                });
             }
 
-            view.setAdapter(new TimeLineAdapter(mContext, index));
+            view.setAdapter(new TimeLineListAdapter(mContext, index));
 
         container.addView(view);
 

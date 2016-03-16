@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/select_catelog"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/seperator" />
+
+        <Button
+            android:id="@+id/bt_catelog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="5dp"
+            android:background="@android:color/white"
+            android:text="@string/select_catelog"
+            />
+
+        <include android:id="@+id/arrow" layout="@layout/right_arrow" />
+
+        <View
+            android:id="@+id/vw_catelogColor"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/arrow" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/seperator" />
+
+    <RelativeLayout
+        android:id="@+id/select_startTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/bt_startTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="5dp"
+            android:background="@android:color/white"
+            android:text="@string/select_startTime"
+            />
+
+        <include layout="@layout/right_arrow" />
+
+    </RelativeLayout>
+
+
+    <include layout="@layout/seperator" />
+
+    <RelativeLayout
+        android:id="@+id/select_stopTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/bt_stopTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="5dp"
+            android:background="@android:color/white"
+            android:text="@string/select_stopTime"
+            />
+
+        <include layout="@layout/right_arrow" />
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>
