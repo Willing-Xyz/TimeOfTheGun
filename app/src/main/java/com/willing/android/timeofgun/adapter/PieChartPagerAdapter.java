@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Willing on 2016/3/16.
@@ -114,6 +114,13 @@ public class PieChartPagerAdapter extends PagerAdapter
     public void onUnitChange(UnitChangeEvent event)
     {
         mUnit = event.getUnit();
+        Set<Map.Entry<Integer, PieChart>> set = mPieCharMap.entrySet();
+        Map.Entry<Integer, PieChart> entry = null;
+        for (Iterator<Map.Entry<Integer, PieChart>> ite = set.iterator(); ite.hasNext(); )
+        {
+            entry = ite.next();
+            new LoadPieChartDataTask(entry.getKey()).execute(entry.getKey() - Integer.MAX_VALUE + 1);
+        }
     }
 
     private PieData getPieDataset(int index)
@@ -168,7 +175,6 @@ public class PieChartPagerAdapter extends PagerAdapter
             startTime = cursor.getLong(cursor.getColumnIndex(DbHelper.START_TIME));
             stopTime = cursor.getLong(cursor.getColumnIndex(DbHelper.STOP_TIME));
             catelogTime = DateUtils.convertToHour(stopTime - startTime);
-            Log.i("test", "catelogTime: " + catelogTime);
             catelogColor = cursor.getInt(cursor.getColumnIndex(DbHelper.CATELOG_COLOR));
 
             Entry entry;
@@ -223,8 +229,11 @@ public class PieChartPagerAdapter extends PagerAdapter
             PieChart chart = mPieCharMap.get(mPos);
             if (chart != null && (View)chart.getParent() != null)
             {
-                chart.setData(pieData);
-                chart.requestLayout();
+                    chart.clear();
+
+                    chart.clear();
+                    chart.setData(pieData);
+                chart.getParent().requestLayout();
             }
         }
     }

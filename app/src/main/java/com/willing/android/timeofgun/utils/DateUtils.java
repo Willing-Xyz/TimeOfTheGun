@@ -1,5 +1,7 @@
 package com.willing.android.timeofgun.utils;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -107,14 +109,6 @@ public class DateUtils {
         return builder.toString();
     }
 
-    // TODO: 2016/3/16 待删除
-    public static String formatDate(long time) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-        Date date = new Date(time);
-        return format.format(date);
-    }
-
     public static String formatDateAndWeek(long timeInMillis) {
 
         Calendar cal = Calendar.getInstance();
@@ -181,6 +175,7 @@ public class DateUtils {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeInMillis);
 
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
@@ -194,6 +189,7 @@ public class DateUtils {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeInMillis);
 
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
@@ -212,24 +208,27 @@ public class DateUtils {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
 
+        Log.i("test", "month begin:" + formatDate(cal.getTimeInMillis()));
 
         return cal.getTimeInMillis();
     }
-
 
     public static long getMonthEnd(long timeInMillis) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeInMillis);
 
         cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.add(Calendar.MONTH, 1);
         cal.add(Calendar.DAY_OF_MONTH, -1);
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
 
+        Log.i("test", "month end:" + formatDate(cal.getTimeInMillis()));
 
         return cal.getTimeInMillis();
     }
+
 
     public static long getYearBegin(long timeInMillis) {
         Calendar cal = Calendar.getInstance();
@@ -261,5 +260,19 @@ public class DateUtils {
 
     public static float convertToHour(long time) {
         return time / (1000 * 60 * 60f);
+    }
+
+    public static String formatDate(long time) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date date = new Date(time);
+        return format.format(date);
+    }
+
+    public static String formatDateMonth(long time) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+
+        Date date = new Date(time);
+        return format.format(date);
     }
 }

@@ -9,6 +9,11 @@ public class UnitChangeEvent
 {
     private DateUnit unit;
 
+    public UnitChangeEvent(DateUnit u)
+    {
+        unit = u;
+    }
+
     public DateUnit getUnit() {
         return unit;
     }
