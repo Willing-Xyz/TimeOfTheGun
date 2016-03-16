@@ -38,4 +38,6 @@ public class SettingsFragment extends BaseFragment
 
         return view;
     }
+
+
 }

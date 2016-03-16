@@ -6,4 +6,10 @@
 
 
     <color name="seperator">#d3d3d5</color>
+
+    <color name="middle_round_rect_selected_solid">#0000ff</color>
+    <color name="middle_round_rect_unselected_solid">#888888</color>
+    <color name="middle_days_unselected">#999999</color>
+    <color name="middle_days_selected">#555555</color>
+    <color name="middle_background">#888888</color>
 </resources>

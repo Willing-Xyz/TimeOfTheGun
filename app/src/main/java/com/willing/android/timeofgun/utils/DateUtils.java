@@ -1,7 +1,5 @@
 package com.willing.android.timeofgun.utils;
 
-import android.util.Log;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,12 +31,10 @@ public class DateUtils {
     public static long getDayBegin(long timeInMillis) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeInMillis);
-        Log.i("test", "0begin: " + formatDate(timeInMillis));
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
 
-        Log.i("test", "begin: " + formatDate(timeInMillis));
 
         return cal.getTimeInMillis();
     }
@@ -48,13 +44,11 @@ public class DateUtils {
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeInMillis);
-        Log.i("test", "0end: " + formatDate(timeInMillis));
 
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
 
-        Log.i("test", "end: " + formatDate(timeInMillis));
 
         return cal.getTimeInMillis();
     }
@@ -181,5 +175,91 @@ public class DateUtils {
 
         Date date = new Date(time);
         return format.format(date);
+    }
+
+    public static long getWeekBegin(long timeInMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeInMillis);
+
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+
+
+        return cal.getTimeInMillis();
+    }
+
+    public static long getWeekEnd(long timeInMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeInMillis);
+
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+
+
+        return cal.getTimeInMillis();
+    }
+
+    public static long getMonthBegin(long timeInMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeInMillis);
+
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+
+
+        return cal.getTimeInMillis();
+    }
+
+
+    public static long getMonthEnd(long timeInMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeInMillis);
+
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+
+
+        return cal.getTimeInMillis();
+    }
+
+    public static long getYearBegin(long timeInMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeInMillis);
+
+        cal.set(Calendar.MONTH, Calendar.JANUARY);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+
+
+        return cal.getTimeInMillis();
+    }
+
+    public static long getYearEnd(long timeInMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timeInMillis);
+
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.DAY_OF_MONTH, 31);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+
+
+        return cal.getTimeInMillis();
+    }
+
+    public static float convertToHour(long time) {
+        return time / (1000 * 60 * 60f);
     }
 }

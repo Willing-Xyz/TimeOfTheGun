@@ -50,4 +50,8 @@
     <string name="starttime_greater_stoptime">开始时间不能大于结束时间</string>
     <string name="stoptime_less_starttime">结束时间不能小于开始时间</string>
     <string name="info_less">缺少信息</string>
+    <string name="week">周</string>
+    <string name="day">日</string>
+    <string name="month">月</string>
+    <string name="year">年</string>
 </resources>

@@ -12,12 +12,16 @@ import android.widget.TextView;
 
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.activity.AddEventActivity;
+import com.willing.android.timeofgun.event.AddEventEvent;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.EventAndCatelog;
 import com.willing.android.timeofgun.utils.DateUtils;
 import com.willing.android.timeofgun.utils.DbHelper;
 import com.willing.android.timeofgun.view.CircleView;
 import com.willing.android.timeofgun.view.RectView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -74,11 +78,13 @@ public class TimeLineListAdapter extends BaseAdapter{
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: 2016/3/16 增加Event
+                    // 点击时注册，处理时解注册
+                    EventBus.getDefault().register(this);
                     Intent intent = new Intent(mContext, AddEventActivity.class);
                     mContext.startActivity(intent);
                 }
             });
+
             return view;
         }
 
@@ -127,6 +133,13 @@ public class TimeLineListAdapter extends BaseAdapter{
         {
             return TYPE_SHOW_EVENT;
         }
+    }
+
+    @Subscribe
+    public void onAddEvent(AddEventEvent event)
+    {
+        EventBus.getDefault().unregister(this);
+        new LoadEventTask().execute();
     }
 
     class ViewHolder
