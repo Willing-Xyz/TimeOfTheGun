@@ -70,6 +70,9 @@
         <activity android:name=".activity.ModifyCatelogActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             />
+        <activity android:name=".activity.ModifyEventActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            />
     </application>
 
 </manifest>

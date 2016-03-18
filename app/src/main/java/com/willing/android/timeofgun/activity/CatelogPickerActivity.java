@@ -118,6 +118,7 @@ public class CatelogPickerActivity extends AppCompatActivity
         }
         if (id == android.R.id.home)
         {
+            setResult(RESULT_CANCELED);
             finish();
         }
         return false;

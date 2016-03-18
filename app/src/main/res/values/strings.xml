@@ -63,4 +63,5 @@
     <string name="sure_delete_catelog_msg">注意：删除类别也会删除相关的事件</string>
     <string name="delete">删除</string>
     <string name="cancel">取消</string>
+    <string name="modify_event">修改事件</string>
 </resources>

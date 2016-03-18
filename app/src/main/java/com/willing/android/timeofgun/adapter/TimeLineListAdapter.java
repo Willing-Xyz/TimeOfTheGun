@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.provider.BaseColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -192,6 +193,7 @@ public class TimeLineListAdapter extends BaseAdapter{
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext())
         {
             EventAndCatelog event = new EventAndCatelog();
+            event.setId(cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)));
             event.setStartTime(cursor.getLong(cursor.getColumnIndex(DbHelper.START_TIME)));
             event.setStopTime(cursor.getLong(cursor.getColumnIndex(DbHelper.STOP_TIME)));
             Catelog catelog = new Catelog();

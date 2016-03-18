@@ -11,6 +11,7 @@ import com.willing.android.timeofgun.event.AddCatelogEvent;
 import com.willing.android.timeofgun.event.AddEventEvent;
 import com.willing.android.timeofgun.event.DeleteCatelogEvent;
 import com.willing.android.timeofgun.event.DeleteEventEvent;
+import com.willing.android.timeofgun.event.UpdateEventEvent;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.Event;
 
@@ -249,5 +250,20 @@ public class DbHelper extends SQLiteOpenHelper{
         db.delete(MAIN_TABLE_NAME, CATELOG_ID + "=?", new String[]{catelogId + ""});
         EventBus.getDefault().post(new DeleteEventEvent());
         db.close();
+    }
+
+    public static void updateEvent(Context context, Event event) {
+        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(START_TIME, event.getStartTime());
+        values.put(STOP_TIME, event.getStopTime());
+        values.put(CATELOG_ID, event.getCatelogId());
+
+        db.update(MAIN_TABLE_NAME, values, BaseColumns._ID + "=" + event.getId(), null);
+
+        db.close();
+
+        EventBus.getDefault().post(new UpdateEventEvent());
     }
 }

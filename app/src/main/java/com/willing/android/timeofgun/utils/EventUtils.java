@@ -24,6 +24,11 @@ public class EventUtils
 
         // 保存到本地
         DbHelper.addEvent(context, event);
+        addToServer(context, event);
+
+    }
+
+    private static void addToServer(final Context context, final Event event) {
         // 保存到服务器
         User user = BmobUser.getCurrentUser(context, User.class);
         if (user != null) {
@@ -75,5 +80,13 @@ public class EventUtils
                 }
             }
         }.start();
+    }
+
+    public static void updateEvent(Context context, Event event) {
+
+        DbHelper.updateEvent(context, event);
+
+        addToServer(context, event);
+
     }
 }
