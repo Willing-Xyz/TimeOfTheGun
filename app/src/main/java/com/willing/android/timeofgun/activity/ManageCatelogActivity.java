@@ -1,22 +1,35 @@
 package com.willing.android.timeofgun.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 import com.willing.android.timeofgun.R;
+import com.willing.android.timeofgun.adapter.CatelogAdapter;
+import com.willing.android.timeofgun.event.DeleteCatelogEvent;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.utils.DbHelper;
 import com.willing.android.timeofgun.utils.LoadCatelogTask;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
 
 /**
  * Created by Willing on 2015/11/19 0019.
@@ -31,6 +44,7 @@ public class ManageCatelogActivity extends AppCompatActivity
 
     private ListView mCatelogListView;
     private LoadCatelogTask mLoadCatelogTask;
+    private ActionMode mActionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,6 +64,8 @@ public class ManageCatelogActivity extends AppCompatActivity
     private void initView()
     {
         mCatelogListView = (ListView) findViewById(R.id.lv_catelog);
+        mCatelogListView.setMultiChoiceModeListener(new CatelogMultiChoiceModeListener());
+        mCatelogListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
     }
 
     private void setupListener()
@@ -116,5 +132,90 @@ public class ManageCatelogActivity extends AppCompatActivity
         return false;
     }
 
+    @Subscribe
+    public void onDeleteCatelog(DeleteCatelogEvent event)
+    {
+        mLoadCatelogTask.cancel(true);
+        new LoadCatelogTask(this, mCatelogListView).execute();
+    }
 
+
+    private class CatelogMultiChoiceModeListener implements AbsListView.MultiChoiceModeListener {
+
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            View view = mCatelogListView.getChildAt(position - mCatelogListView.getFirstVisiblePosition());
+            CheckBox checkbox = (CheckBox) view.findViewById(R.id.cb_checked);
+            checkbox.setChecked(mCatelogListView.isItemChecked(position));
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mActionMode = mode;
+
+            mode.getMenuInflater().inflate(R.menu.catelog_manage, menu);
+
+            CatelogAdapter adapter = (CatelogAdapter) mCatelogListView.getAdapter();
+            adapter.setActionModeStarted(true);
+            adapter.notifyDataSetChanged();
+
+            EventBus.getDefault().register(ManageCatelogActivity.this);
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId())
+            {
+                case R.id.delete_catelog:
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ManageCatelogActivity.this);
+                    builder.setTitle(R.string.sure_delete_catelog);
+                    builder.setMessage(R.string.sure_delete_catelog_msg);
+                    builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SparseBooleanArray checks = mCatelogListView.getCheckedItemPositions();
+                            ArrayList<Long> catelogs = new ArrayList<>();
+                            Cursor cursor = null;
+                            for (int i = 0; i < checks.size(); ++i) {
+                                    cursor = (Cursor) mCatelogListView.getAdapter().getItem(checks.keyAt(i));
+                                    catelogs.add(cursor.getLong(cursor.getColumnIndex(DbHelper.CATELOG_ID)));
+                            }
+
+                            DbHelper.deleteCatelogs(ManageCatelogActivity.this, catelogs);
+
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.create().show();
+
+                    return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+
+            CatelogAdapter adapter = (CatelogAdapter) mCatelogListView.getAdapter();
+            adapter.setActionModeStarted(false);
+            adapter.notifyDataSetChanged();
+            mActionMode = null;
+
+            EventBus.getDefault().unregister(ManageCatelogActivity.this);
+        }
+    }
 }

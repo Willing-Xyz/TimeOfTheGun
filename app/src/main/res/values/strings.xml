@@ -59,4 +59,8 @@
     <string name="about">关于</string>
     <string name="quit_account">退出账号</string>
     <string name="modify_catelog">修改类别</string>
+    <string name="sure_delete_catelog">确定删除选中的类别?</string>
+    <string name="sure_delete_catelog_msg">注意：删除类别也会删除相关的事件</string>
+    <string name="delete">删除</string>
+    <string name="cancel">取消</string>
 </resources>

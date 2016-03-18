@@ -9,10 +9,14 @@ import android.provider.BaseColumns;
 
 import com.willing.android.timeofgun.event.AddCatelogEvent;
 import com.willing.android.timeofgun.event.AddEventEvent;
+import com.willing.android.timeofgun.event.DeleteCatelogEvent;
+import com.willing.android.timeofgun.event.DeleteEventEvent;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.Event;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 
 /**
  * Created by Willing on 2016/3/15.
@@ -93,12 +97,13 @@ public class DbHelper extends SQLiteOpenHelper{
         Cursor cursor = db.query(DbHelper.CATELOG_TABLE_NAME, new String[]{BaseColumns._ID},
                 DbHelper.CATELOG_NAME + "=?", new String[]{name}, null, null, null);
 
-
+        boolean isExisted = false;
         if (cursor != null && cursor.getCount() > 0)
         {
-            return true;
+            isExisted = true;
         }
-        return false;
+        db.close();
+        return isExisted;
     }
 
     public static void addCatelog(Context context, Catelog catelog) {
@@ -106,6 +111,8 @@ public class DbHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = helper.getWritableDatabase();
 
         db.insert(CATELOG_TABLE_NAME, null, getCatelogContentValues(catelog));
+
+        db.close();
 
         EventBus.getDefault().postSticky(new AddCatelogEvent());
     }
@@ -150,6 +157,7 @@ public class DbHelper extends SQLiteOpenHelper{
 
             catelog = generateCatelog(cursor);
         }
+        db.close();
 
         return catelog;
     }
@@ -168,6 +176,7 @@ public class DbHelper extends SQLiteOpenHelper{
         values.put(DbHelper.CATELOG_ID, catelogId);
 
         db.insert(DbHelper.MAIN_TABLE_NAME, null, values);
+        db.close();
 
         EventBus.getDefault().postSticky(new AddEventEvent());
     }
@@ -216,5 +225,29 @@ public class DbHelper extends SQLiteOpenHelper{
 
         // 更新catelog table
         db.update(CATELOG_TABLE_NAME, cateVals, BaseColumns._ID + "=" + catelog.getId(), null);
+        db.close();
+    }
+
+    // 删除类别并删除相关联的事件
+    public static void deleteCatelogs(Context context, ArrayList<Long> catelogs) {
+
+        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+
+        for (int i = 0; i < catelogs.size(); ++i)
+        {
+            db.delete(CATELOG_TABLE_NAME, CATELOG_ID + "=?", new String[]{catelogs.get(i) + ""});
+            deleteEventByCatelogId(context, catelogs.get(i));
+        }
+        EventBus.getDefault().post(new DeleteCatelogEvent());
+        db.close();
+    }
+
+    public static void deleteEventByCatelogId(Context context, long catelogId)
+    {
+        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+
+        db.delete(MAIN_TABLE_NAME, CATELOG_ID + "=?", new String[]{catelogId + ""});
+        EventBus.getDefault().post(new DeleteEventEvent());
+        db.close();
     }
 }

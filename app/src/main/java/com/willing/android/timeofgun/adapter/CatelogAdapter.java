@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ import com.willing.android.timeofgun.utils.DbHelper;
 public class CatelogAdapter extends SimpleCursorAdapter
 {
     private final LayoutInflater mInflater;
+    private boolean mActionModeStarted;
 
     public CatelogAdapter(Context context, Cursor c, String[] from, int[] to)
     {
@@ -36,12 +38,24 @@ public class CatelogAdapter extends SimpleCursorAdapter
             holder = new ViewHolder();
             holder.catelogColor = convertView.findViewById(R.id.vw_catelogColor);
             holder.catelogName = (TextView) convertView.findViewById(R.id.tv_catelogName);
+            holder.checkBox = (CheckBox) convertView.findViewById(R.id.cb_checked);
+
             convertView.setTag(holder);
         }
         else
         {
             holder = (ViewHolder) convertView.getTag();
         }
+
+        if (mActionModeStarted)
+        {
+            holder.checkBox.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            holder.checkBox.setVisibility(View.GONE);
+        }
+
         final Cursor cursor = (Cursor) getItem(position);
 
         holder.catelogColor.setBackgroundColor(cursor.getInt(cursor.getColumnIndex(DbHelper.CATELOG_COLOR)));
@@ -66,9 +80,15 @@ public class CatelogAdapter extends SimpleCursorAdapter
         };
     }
 
+    public void setActionModeStarted(boolean b) {
+
+        mActionModeStarted = b;
+    }
+
     class ViewHolder
     {
         View catelogColor;
         TextView catelogName;
+        CheckBox checkBox;
     }
 }
