@@ -170,16 +170,36 @@ public class DbHelper extends SQLiteOpenHelper{
         long stopTime = event.getStopTime();
         long catelogId = event.getCatelogId();
 
-        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DbHelper.START_TIME, startTime);
-        values.put(DbHelper.STOP_TIME, stopTime);
-        values.put(DbHelper.CATELOG_ID, catelogId);
+        ArrayList<Event> events = partitionEvent(startTime, stopTime, catelogId);
 
-        db.insert(DbHelper.MAIN_TABLE_NAME, null, values);
+        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+
+        for (int i = 0; i < events.size(); ++i) {
+            ContentValues values = new ContentValues();
+            values.put(DbHelper.START_TIME, events.get(i).getStartTime());
+            values.put(DbHelper.STOP_TIME, events.get(i).getStopTime());
+            values.put(DbHelper.CATELOG_ID, events.get(i).getCatelogId());
+
+            db.insert(DbHelper.MAIN_TABLE_NAME, null, values);
+        }
         db.close();
 
         EventBus.getDefault().postSticky(new AddEventEvent());
+    }
+
+    private static ArrayList<Event> partitionEvent(long startTime, long stopTime, long catelogId) {
+        ArrayList<Event> events = new ArrayList<>();
+
+        long curStopTime = DateUtils.getDayEnd(startTime);
+        while (curStopTime < stopTime)
+        {
+            events.add(new Event(startTime, curStopTime, catelogId));
+            startTime = curStopTime + 1000;
+            curStopTime = DateUtils.getDayEnd(startTime);
+        }
+        events.add(new Event(startTime, stopTime, catelogId));
+
+        return events;
     }
 
     public static Cursor queryEvent(Context context, long startDate, long stopDate) {
@@ -253,15 +273,19 @@ public class DbHelper extends SQLiteOpenHelper{
     }
 
     public static void updateEvent(Context context, Event event) {
+
+        ArrayList<Event> events = partitionEvent(event.getStartTime(), event.getStopTime(), event.getCatelogId());
+
         SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(START_TIME, event.getStartTime());
-        values.put(STOP_TIME, event.getStopTime());
-        values.put(CATELOG_ID, event.getCatelogId());
+        for (int i = 0; i < events.size(); ++i) {
+            ContentValues values = new ContentValues();
+            values.put(START_TIME, events.get(i).getStartTime());
+            values.put(STOP_TIME, events.get(i).getStopTime());
+            values.put(CATELOG_ID, events.get(i).getCatelogId());
 
-        db.update(MAIN_TABLE_NAME, values, BaseColumns._ID + "=" + event.getId(), null);
-
+            db.update(MAIN_TABLE_NAME, values, BaseColumns._ID + "=" + event.getId(), null);
+        }
         db.close();
 
         EventBus.getDefault().post(new UpdateEventEvent());

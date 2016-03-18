@@ -14,10 +14,13 @@ import android.widget.Toast;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.willing.android.timeofgun.R;
+import com.willing.android.timeofgun.event.AddEventEvent;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.Event;
 import com.willing.android.timeofgun.utils.DateUtils;
 import com.willing.android.timeofgun.utils.EventUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
 
@@ -202,5 +205,12 @@ public class AddEventActivity extends AppCompatActivity
             finish();
         }
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        EventBus.getDefault().post(new AddEventEvent());
     }
 }

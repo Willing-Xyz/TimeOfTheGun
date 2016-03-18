@@ -1,7 +1,6 @@
 package com.willing.android.timeofgun.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.provider.BaseColumns;
@@ -12,7 +11,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.willing.android.timeofgun.R;
-import com.willing.android.timeofgun.activity.AddEventActivity;
 import com.willing.android.timeofgun.event.AddEventEvent;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.EventAndCatelog;
@@ -76,15 +74,6 @@ public class TimeLineListAdapter extends BaseAdapter{
         if (getItemViewType(position) == TYPE_ADD_EVENT)
         {
             View view = LayoutInflater.from(mContext).inflate(R.layout.list_add_catelog, parent, false);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // 点击时注册，处理时解注册
-                    EventBus.getDefault().register(TimeLineListAdapter.this);
-                    Intent intent = new Intent(mContext, AddEventActivity.class);
-                    mContext.startActivity(intent);
-                }
-            });
 
             return view;
         }
@@ -197,6 +186,7 @@ public class TimeLineListAdapter extends BaseAdapter{
             event.setStartTime(cursor.getLong(cursor.getColumnIndex(DbHelper.START_TIME)));
             event.setStopTime(cursor.getLong(cursor.getColumnIndex(DbHelper.STOP_TIME)));
             Catelog catelog = new Catelog();
+            catelog.setCatelogId(cursor.getLong(cursor.getColumnIndex(DbHelper.CATELOG_ID)));
             catelog.setColor(cursor.getInt(cursor.getColumnIndex(DbHelper.CATELOG_COLOR)));
             catelog.setName(cursor.getString(cursor.getColumnIndex(DbHelper.CATELOG_NAME)));
             event.setCatelog(catelog);

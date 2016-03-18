@@ -10,6 +10,22 @@ public class Event
     private long catelogId;
     private int id;
 
+    public Event()
+    {}
+
+    public Event(long startTime, long stopTime, long catelogId) {
+        this.startTime = startTime;
+        this.stopTime = stopTime;
+        this.catelogId = catelogId;
+    }
+
+    public Event(long startTime, long stopTime, long catelogId, int id) {
+        this.startTime = startTime;
+        this.stopTime = stopTime;
+        this.catelogId = catelogId;
+        this.id = id;
+    }
+
     public int getId()
     {
         return id;

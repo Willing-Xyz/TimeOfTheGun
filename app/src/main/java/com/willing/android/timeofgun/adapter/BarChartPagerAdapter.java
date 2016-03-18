@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -168,21 +167,21 @@ public class BarChartPagerAdapter extends PagerAdapter
                 startTime = DateUtils.getWeekBegin(cal.getTimeInMillis());
                 stopTime = DateUtils.getWeekEnd(cal.getTimeInMillis());
                 xValStr = mWeeks;
-                skipTime = 24 * 60 * 60 * 1000 - 1;
+                skipTime = 24 * 60 * 60 * 1000 - 1000;
                 break;
             case MONTH:
                 cal.add(Calendar.MONTH, index);
                 startTime = DateUtils.getMonthBegin(cal.getTimeInMillis());
                 stopTime = DateUtils.getMonthEnd(cal.getTimeInMillis());
                 xValStr = mMonths;
-                skipTime = 24 * 60 * 60 * 1000 - 1;
+                skipTime = 24 * 60 * 60 * 1000 - 1000;
                 break;
             case YEAR:
                 cal.add(Calendar.YEAR, index);
                 startTime = DateUtils.getYearBegin(cal.getTimeInMillis());
                 stopTime = DateUtils.getYearEnd(cal.getTimeInMillis());
                 xValStr = mYears;
-                skipTime = 24L * 60 * 60 * 1000 * 30 - 1; // TODO: 2016/3/18
+                skipTime = 24L * 60 * 60 * 1000 * 30 - 1000; // TODO: 2016/3/18
                 break;
         }
 
@@ -199,7 +198,6 @@ public class BarChartPagerAdapter extends PagerAdapter
         }
 
 
-        Log.i("test", "skiptime" + DateUtils.formatDate(skipTime));
         long curStartTime = startTime;
         long curStopTime = startTime + skipTime;
         float curCatelogTime = 0;
@@ -211,22 +209,16 @@ public class BarChartPagerAdapter extends PagerAdapter
             stopTime = cursor.getLong(cursor.getColumnIndex(DbHelper.STOP_TIME));
             curCatelogTime = DateUtils.convertToHour(stopTime - startTime);
 
-            Log.i("test", "startTime: " + DateUtils.formatDate(startTime));
-            Log.i("test", "stopTime: " + DateUtils.formatDate(stopTime));
-
             while (startTime > curStopTime)
             {
                 if (sumCatelogTime != 0)
                 {
                     yVals.add(new BarEntry(sumCatelogTime, curIndex++));
                     sumCatelogTime = 0;
-                    curStartTime = curStopTime + 1;
+                    curStartTime = curStopTime + 1000;
                     curStopTime = curStartTime + skipTime;
                     continue;
                 }
-
-                Log.i("test", "inner cur starttime: " + DateUtils.formatDate(curStartTime));
-                Log.i("test", "inner cur stoptime: " + DateUtils.formatDate(curStopTime));
 
                 yVals.add(new BarEntry(0, curIndex++));
                 curStartTime = curStopTime + 1;

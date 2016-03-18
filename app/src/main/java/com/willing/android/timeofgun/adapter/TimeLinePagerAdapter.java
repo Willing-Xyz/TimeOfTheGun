@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.willing.android.timeofgun.activity.AddEventActivity;
 import com.willing.android.timeofgun.activity.ModifyEventActivity;
+import com.willing.android.timeofgun.event.AddEventEvent;
 import com.willing.android.timeofgun.event.UpdateEventEvent;
 import com.willing.android.timeofgun.model.EventAndCatelog;
 
@@ -72,6 +74,10 @@ public class TimeLinePagerAdapter extends PagerAdapter {
 
                             EventBus.getDefault().register(TimeLinePagerAdapter.this);
                             mContext.startActivity(intent);
+                        } else {
+                            EventBus.getDefault().register(TimeLinePagerAdapter.this);
+                            Intent intent = new Intent(mContext, AddEventActivity.class);
+                            mContext.startActivity(intent);
                         }
 
                     }
@@ -100,6 +106,12 @@ public class TimeLinePagerAdapter extends PagerAdapter {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateEvent(UpdateEventEvent event)
     {
+        updateData();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    private void updateData() {
         Set<Map.Entry<Integer, ListView>> set = mListViewMap.entrySet();
         Map.Entry<Integer, ListView> entry = null;
         for (Iterator<Map.Entry<Integer, ListView>> ite = set.iterator(); ite.hasNext(); )
@@ -107,6 +119,12 @@ public class TimeLinePagerAdapter extends PagerAdapter {
             entry = ite.next();
             entry.getValue().setAdapter(new TimeLineListAdapter(mContext, entry.getKey() - Integer.MAX_VALUE + 1));
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAddEvent(AddEventEvent event)
+    {
+        updateData();
 
         EventBus.getDefault().unregister(this);
     }

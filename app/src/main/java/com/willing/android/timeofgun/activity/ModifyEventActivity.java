@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,11 +13,14 @@ import android.widget.TextView;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.willing.android.timeofgun.R;
+import com.willing.android.timeofgun.event.UpdateEventEvent;
 import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.Event;
 import com.willing.android.timeofgun.model.EventAndCatelog;
 import com.willing.android.timeofgun.utils.DateUtils;
 import com.willing.android.timeofgun.utils.EventUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
 
@@ -80,7 +82,6 @@ public class ModifyEventActivity extends AppCompatActivity
         mStartTimeView.setText(DateUtils.formatDateAndTime(mEvent.getStartTime()));
         mStopTimeView.setText(DateUtils.formatDateAndTime(mEvent.getStopTime()));
 
-        Log.i("test", "1 id: " + mEvent.getId());
     }
 
     private void setupListener() {
@@ -185,7 +186,6 @@ public class ModifyEventActivity extends AppCompatActivity
             event.setCatelogId(mEvent.getCatelog().getCatelogId());
             event.setId(mEvent.getId());
 
-            Log.i("test", "2 id: " + mEvent.getId() + mEvent.getCatelog().getName());
 
             new Thread()
             {
@@ -200,5 +200,12 @@ public class ModifyEventActivity extends AppCompatActivity
         return false;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
+        // 模拟发送UpdateEventEvent。
+        // 因为如果用户直接按下返回键返回，那么就不会发送事件，那么就不会解注册。之后也会重复注册
+        EventBus.getDefault().post(new UpdateEventEvent());
+    }
 }

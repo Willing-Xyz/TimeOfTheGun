@@ -1,5 +1,6 @@
 package com.willing.android.timeofgun.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -108,6 +109,8 @@ public class TimelineFragment extends BaseFragment{
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
+    }
 }
