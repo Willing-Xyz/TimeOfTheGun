@@ -55,4 +55,8 @@
     <string name="month">月</string>
     <string name="year">年</string>
     <string name="stastistic_catelog">类别统计</string>
+    <string name="catelog_manage">类别管理</string>
+    <string name="about">关于</string>
+    <string name="quit_account">退出账号</string>
+    <string name="modify_catelog">修改类别</string>
 </resources>

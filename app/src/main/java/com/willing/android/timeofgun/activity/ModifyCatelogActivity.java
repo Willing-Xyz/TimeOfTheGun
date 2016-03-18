@@ -18,19 +18,16 @@ import com.willing.android.timeofgun.utils.DbHelper;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.SaveListener;
 
-
 /**
- * Created by Willing on 2015/11/17 0017.
+ * Created by Willing on 2016/3/18.
  */
-public class AddCatelogActivity extends AppCompatActivity
+public class ModifyCatelogActivity extends AppCompatActivity
 {
-    private static final String STATE_COLOR = "stateColor";
-
-
-    private int mCatelogColor = -1;
+    private static final String STATE_CATELOG = "state_catelog";
 
     private EditText mCatelogNameEditText;
     private ColorPicker mColorPicker;
+    private Catelog mCatelog;
 
 
     @Override
@@ -38,9 +35,9 @@ public class AddCatelogActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_add_catelog);
+        setContentView(R.layout.activity_modify_catelog);
 
-        getSupportActionBar().setTitle(R.string.add_catelog);
+        getSupportActionBar().setTitle(R.string.modify_catelog);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.acion_ok);
@@ -52,9 +49,14 @@ public class AddCatelogActivity extends AppCompatActivity
     private void initView()
     {
         mColorPicker = (ColorPicker) findViewById(R.id.colorPicker);
-        mColorPicker.setShowOldCenterColor(false);
+        mColorPicker.setShowOldCenterColor(true);
 
         mCatelogNameEditText = (EditText) findViewById(R.id.et_catelogName);
+
+        mCatelog = getIntent().getParcelableExtra(ManageCatelogActivity.EXTRA_CATELOG);
+        mCatelogNameEditText.setText(mCatelog.getName());
+        mColorPicker.setColor(mCatelog.getColor());
+
     }
 
     private void setupListener()
@@ -62,7 +64,7 @@ public class AddCatelogActivity extends AppCompatActivity
         mColorPicker.setOnColorSelectedListener(new ColorPicker.OnColorSelectedListener() {
             @Override
             public void onColorSelected(int color) {
-                mCatelogColor = color;
+                mCatelog.setColor(color);
             }
         });
     }
@@ -75,34 +77,30 @@ public class AddCatelogActivity extends AppCompatActivity
             final String name = mCatelogNameEditText.getText().toString().trim();
             if (name.length() == 0) {
                 // 提示不能为空
-                Toast.makeText(AddCatelogActivity.this, R.string.catelogName_cannot_null, Toast.LENGTH_LONG).show();
+                Toast.makeText(ModifyCatelogActivity.this, R.string.catelogName_cannot_null, Toast.LENGTH_LONG).show();
                 return true;
             } else {
                 // 判断是否名字是否重复
-
-                if (DbHelper.isCatelogNameExisted(AddCatelogActivity.this, name)) {
-                    Toast.makeText(AddCatelogActivity.this, R.string.catelogName_isExisted, Toast.LENGTH_LONG).show();
-                    return true;
+                if (!name.equals(mCatelog.getName())) {
+                    if (DbHelper.isCatelogNameExisted(ModifyCatelogActivity.this, name)) {
+                        Toast.makeText(ModifyCatelogActivity.this, R.string.catelogName_isExisted, Toast.LENGTH_LONG).show();
+                        return true;
+                    }
                 }
             }
 
-            if (mCatelogColor == -1) {
-                Toast.makeText(AddCatelogActivity.this, R.string.must_select_color, Toast.LENGTH_LONG).show();
-                return true;
-            }
+            mCatelog.setName(name);
 
-            final long catelogId = System.currentTimeMillis();
-            final Catelog catelog = new Catelog(name, mCatelogColor, catelogId);
             // 保存到本地
-            CatelogUtils.addCatelogToLocal(AddCatelogActivity.this, catelog);
+            CatelogUtils.updateCatelogToLocal(ModifyCatelogActivity.this, mCatelog);
             // 保存到服务器
             User user = BmobUser.getCurrentUser(this, User.class);
             if (user != null) {
                 CatelogBmob catelogBmob = new CatelogBmob();
-                catelogBmob.setCatelogColor(mCatelogColor);
+                catelogBmob.setCatelogColor(mCatelog.getColor());
                 catelogBmob.setCatelogName(name);
                 catelogBmob.setUserId(user.getObjectId());
-                catelogBmob.setCatelogId(catelogId);
+                catelogBmob.setCatelogId(mCatelog.getCatelogId());
 
                 catelogBmob.save(this, new SaveListener() {
                     @Override
@@ -113,13 +111,13 @@ public class AddCatelogActivity extends AppCompatActivity
                     @Override
                     public void onFailure(int i, String s) {
 
-                        CatelogUtils.addCatelogForServer(AddCatelogActivity.this, catelog, CatelogUtils.TYPE_ADD);
+                        CatelogUtils.addCatelogForServer(ModifyCatelogActivity.this, mCatelog, CatelogUtils.TYPE_UPDATE);
                     }
                 });
             }
             else
             {
-                CatelogUtils.addCatelogForServer(AddCatelogActivity.this, catelog, CatelogUtils.TYPE_ADD);
+                CatelogUtils.addCatelogForServer(ModifyCatelogActivity.this, mCatelog, CatelogUtils.TYPE_UPDATE);
             }
 
             finish();
@@ -127,12 +125,13 @@ public class AddCatelogActivity extends AppCompatActivity
         return false;
     }
 
+
     @Override
     protected void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
 
-        outState.putInt(STATE_COLOR, mCatelogColor);
+        outState.putParcelable(STATE_CATELOG, mCatelog);
     }
 
     @Override
@@ -140,8 +139,9 @@ public class AddCatelogActivity extends AppCompatActivity
     {
         if (savedInstanceState != null)
         {
-            mCatelogColor = savedInstanceState.getInt(STATE_COLOR);
+            mCatelog = savedInstanceState.getParcelable(STATE_CATELOG);
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
+
 }

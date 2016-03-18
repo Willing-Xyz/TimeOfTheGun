@@ -1,12 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.willing.android.timeofgun1.fragment.SettingFragment">
+
+
+    <RelativeLayout
+        android:id="@+id/catelog_manage"
+        android:layout_marginTop="50dp"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/seperator" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="5dp"
+            android:clickable="false"
+            android:background="@android:color/transparent"
+            android:text="@string/catelog_manage"
+            />
+
+        <include android:id="@+id/arrow" layout="@layout/right_arrow" />
+
+
+    </RelativeLayout>
+
+    <include layout="@layout/seperator" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:id="@+id/bt_about"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button"
-        android:layout_gravity="center_horizontal" />
+        android:layout_marginTop="50dp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="5dp"
+        android:background="@android:color/white"
+        android:text="@string/about"
+        />
+
+    <Button
+        android:id="@+id/bt_quit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:textColor="#ff0000"
+        android:gravity="center"
+        android:paddingLeft="5dp"
+        android:background="@android:color/white"
+        android:text="@string/quit_account"
+        />
+
 </LinearLayout>

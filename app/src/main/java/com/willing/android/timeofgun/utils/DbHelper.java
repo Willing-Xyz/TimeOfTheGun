@@ -205,4 +205,16 @@ public class DbHelper extends SQLiteOpenHelper{
 
         return db.rawQuery(sql, null);
     }
+
+    public static void updateCatelog(Context context, Catelog catelog) {
+        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+
+        ContentValues cateVals = new ContentValues();
+
+        cateVals.put(CATELOG_NAME, catelog.getName());
+        cateVals.put(CATELOG_COLOR, catelog.getColor());
+
+        // 更新catelog table
+        db.update(CATELOG_TABLE_NAME, cateVals, BaseColumns._ID + "=" + catelog.getId(), null);
+    }
 }

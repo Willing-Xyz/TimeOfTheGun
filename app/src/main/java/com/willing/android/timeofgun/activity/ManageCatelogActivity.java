@@ -1,6 +1,5 @@
 package com.willing.android.timeofgun.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -20,17 +19,17 @@ import com.willing.android.timeofgun.utils.DbHelper;
 import com.willing.android.timeofgun.utils.LoadCatelogTask;
 
 /**
- * Created by Willing on 2015/11/16 0016.
+ * Created by Willing on 2015/11/19 0019.
  */
-public class CatelogPickerActivity extends AppCompatActivity
+public class ManageCatelogActivity extends AppCompatActivity
 {
 
-    private static final int ADD_CATELOG_REQUEST_CODE = 1;
+    private static final int ADD_CATELOG_REQUEST_CODE = 2;
+    private static final int MODIFY_CATELOG_REQUEST_CODE = 1;
 
     public static final String EXTRA_CATELOG = "extra_catelog";
 
     private ListView mCatelogListView;
-
     private LoadCatelogTask mLoadCatelogTask;
 
     @Override
@@ -38,31 +37,28 @@ public class CatelogPickerActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_catelog_picker);
+        setContentView(R.layout.activity_manage_catelog);
 
-        getSupportActionBar().setTitle(R.string.pick_catelog);
+        getSupportActionBar().setTitle(R.string.catelog_manage);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
 
         initView();
         setupListener();
-
-
     }
 
     private void initView()
     {
         mCatelogListView = (ListView) findViewById(R.id.lv_catelog);
-
     }
 
     private void setupListener()
     {
-
         mCatelogListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent();
+                Intent intent = new Intent(ManageCatelogActivity.this, ModifyCatelogActivity.class);
+
                 Cursor cursor = (Cursor) mCatelogListView.getItemAtPosition(position);
 
                 Catelog catelog = new Catelog();
@@ -73,12 +69,9 @@ public class CatelogPickerActivity extends AppCompatActivity
 
                 intent.putExtra(EXTRA_CATELOG, catelog);
 
-                setResult(Activity.RESULT_OK, intent);
-
-                CatelogPickerActivity.this.finish();
+                startActivity(intent);
             }
         });
-
     }
 
     @Override
@@ -111,7 +104,7 @@ public class CatelogPickerActivity extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.add_catelog)
         {
-            Intent intent = new Intent(CatelogPickerActivity.this, AddCatelogActivity.class);
+            Intent intent = new Intent(ManageCatelogActivity.this, AddCatelogActivity.class);
 
             startActivity(intent);
             return true;
@@ -122,8 +115,6 @@ public class CatelogPickerActivity extends AppCompatActivity
         }
         return false;
     }
-
-
 
 
 }
