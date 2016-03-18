@@ -187,4 +187,22 @@ public class DbHelper extends SQLiteOpenHelper{
 
         return db.rawQuery(sql, null);
     }
+
+    public static Cursor queryEventByCatelog(Context context, long startDate, long stopDate,  long catelogId)
+    {
+        DbHelper helper = new DbHelper(context);
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        String largeStartDateSql = "select * from "
+                + MAIN_TABLE_NAME + " inner join " + CATELOG_TABLE_NAME + " on "
+                + MAIN_TABLE_NAME + "." + CATELOG_ID + "=" + CATELOG_TABLE_NAME + "." + CATELOG_ID
+                + " where " + START_TIME + " >= " + startDate;
+
+        String sql = "select * from " + "(" + largeStartDateSql + ")"
+                + " where " + STOP_TIME + " <= " + stopDate + " and " + CATELOG_ID + " = " + catelogId
+                + " order by " + START_TIME
+                + ";";
+
+        return db.rawQuery(sql, null);
+    }
 }

@@ -20,6 +20,13 @@
             />
 
         <item
+            android:id="@+id/drawer_statistic_catelog"
+            android:icon="@drawable/statistic_catelog"
+            android:checkable="true"
+            android:title="@string/stastistic_catelog"
+            />
+
+        <item
             android:id="@+id/drawer_timeline"
             android:icon="@drawable/timeline_default"
             android:checkable="true"

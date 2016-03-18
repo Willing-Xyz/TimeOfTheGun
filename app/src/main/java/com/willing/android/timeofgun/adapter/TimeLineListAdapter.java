@@ -79,7 +79,7 @@ public class TimeLineListAdapter extends BaseAdapter{
                 @Override
                 public void onClick(View v) {
                     // 点击时注册，处理时解注册
-                    EventBus.getDefault().register(this);
+                    EventBus.getDefault().register(TimeLineListAdapter.this);
                     Intent intent = new Intent(mContext, AddEventActivity.class);
                     mContext.startActivity(intent);
                 }

@@ -18,7 +18,8 @@ import android.widget.TextView;
 
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.fragment.SettingsFragment;
-import com.willing.android.timeofgun.fragment.StatisticFragment;
+import com.willing.android.timeofgun.fragment.StatisticCatelogFragment;
+import com.willing.android.timeofgun.fragment.StatisticTimeFragment;
 import com.willing.android.timeofgun.fragment.TimelineFragment;
 import com.willing.android.timeofgun.fragment.TimingFragment;
 import com.willing.android.timeofgun.model.User;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String SETTINGS_FRAGMENT = "settings_fragment";
     private static final String TIMELINE_FRAGMENT = "timeline_fragment";
     private static final String STATISTIC_FRAGMENT = "statistic_fragment";
+    private static final String STATISTIC_CATELOG_FRAGMENT = "statistic_catelog_framgnet";
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar mToolBar;
     private NavigationView mNavigation;
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         mUserName = (TextView) mNavigation.getHeaderView(0).findViewById(R.id.userName);
 
         setSupportActionBar(mToolBar);
+
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, mToolBar, 0, 0);
     }
@@ -132,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     private String getTagByMenuId(int id) {
         String tag = null;
         switch (id)
@@ -147,6 +152,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.drawer_settings:
                 tag = SETTINGS_FRAGMENT;
+                break;
+            case R.id.drawer_statistic_catelog:
+                tag = STATISTIC_CATELOG_FRAGMENT;
                 break;
         }
         return tag;
@@ -197,10 +205,13 @@ public class MainActivity extends AppCompatActivity {
                 fragment = TimelineFragment.getInstance();
                 break;
             case STATISTIC_FRAGMENT:
-                fragment = StatisticFragment.getInstance();
+                fragment = StatisticTimeFragment.getInstance();
                 break;
             case SETTINGS_FRAGMENT:
                 fragment = SettingsFragment.getInstance();
+                break;
+            case STATISTIC_CATELOG_FRAGMENT:
+                fragment = StatisticCatelogFragment.getInstance();
                 break;
         }
         addToFragmentCache(fragment, tag);
@@ -241,6 +252,9 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

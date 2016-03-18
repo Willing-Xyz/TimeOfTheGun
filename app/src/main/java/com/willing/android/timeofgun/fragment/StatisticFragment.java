@@ -2,6 +2,7 @@ package com.willing.android.timeofgun.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.willing.android.timeofgun.R;
-import com.willing.android.timeofgun.adapter.PieChartPagerAdapter;
 import com.willing.android.timeofgun.event.UnitChangeEvent;
 import com.willing.android.timeofgun.model.DateUnit;
 import com.willing.android.timeofgun.utils.DateUtils;
@@ -21,27 +21,26 @@ import java.util.Calendar;
 /**
  * Created by Willing on 2016/3/13.
  */
-public class StatisticFragment extends  BaseFragment implements View.OnClickListener {
-
-    private View mRootView;
-
-    private ViewPager mViewPager;
-    private View mDayView;
-    private View mWeekView;
-    private View mMonthView;
-    private View mYearView;
-    private PieChartPagerAdapter mPageAdapter;
-
-    private DateUnit mUnit = DateUnit.DAY;
-
-    private int mCurPage = Integer.MAX_VALUE - 1;
+public abstract class StatisticFragment extends  BaseFragment implements View.OnClickListener {
 
 
-    public static StatisticFragment getInstance()
-    {
-        StatisticFragment fragment = new StatisticFragment();
-        return fragment;
-    }
+    protected View mRootView;
+
+    protected ViewPager mViewPager;
+    protected View mDayView;
+    protected View mWeekView;
+    protected View mMonthView;
+    protected View mYearView;
+
+    protected PagerAdapter mPagerAdapter;
+
+    protected DateUnit mUnit = DateUnit.DAY;
+
+    protected int mCurPage = Integer.MAX_VALUE - 1;
+
+
+
+
 
     @Nullable
     @Override
@@ -61,6 +60,8 @@ public class StatisticFragment extends  BaseFragment implements View.OnClickList
         initView();
         setupListener();
 
+        setHasOptionsMenu(true);
+
         return view;
     }
 
@@ -71,16 +72,16 @@ public class StatisticFragment extends  BaseFragment implements View.OnClickList
         mMonthView = mRootView.findViewById(R.id.bt_month);
         mYearView = mRootView.findViewById(R.id.bt_year);
 
-        mDayView.setSelected(true);
+        setDaysTextView(DateUnit.DAY);
     }
 
     private void setupListener() {
 
 
-        mPageAdapter = new PieChartPagerAdapter(getActivity());
+        mPagerAdapter = createPagerAdapter();
         mViewPager.setOffscreenPageLimit(1);
-        mViewPager.setAdapter(mPageAdapter);
-        mViewPager.setCurrentItem(Integer.MAX_VALUE);
+        mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.setCurrentItem(Integer.MAX_VALUE,false);
 
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -102,6 +103,11 @@ public class StatisticFragment extends  BaseFragment implements View.OnClickList
         mMonthView.setOnClickListener(this);
         mYearView.setOnClickListener(this);
     }
+
+    protected  abstract PagerAdapter createPagerAdapter();
+
+
+
 
     private Calendar getAdjustDate(Calendar cal, int index) {
         switch (mUnit) {
@@ -148,7 +154,7 @@ public class StatisticFragment extends  BaseFragment implements View.OnClickList
         return builder.toString();
     }
 
-    private void setDaysTextView(DateUnit day)
+    protected void setDaysTextView(DateUnit day)
     {
         mDayView.setSelected(false);
         mWeekView.setSelected(false);
@@ -184,7 +190,7 @@ public class StatisticFragment extends  BaseFragment implements View.OnClickList
     public void onStart() {
         super.onStart();
 
-        EventBus.getDefault().register(mPageAdapter);
+        EventBus.getDefault().register(mPagerAdapter);
         // TODO: 2016/3/16 设置子标题
         String date = parseDate(Calendar.getInstance());
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(date);
@@ -194,7 +200,7 @@ public class StatisticFragment extends  BaseFragment implements View.OnClickList
     public void onStop() {
         super.onStop();
 
-        EventBus.getDefault().unregister(mPageAdapter);
+        EventBus.getDefault().unregister(mPagerAdapter);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(null);
     }

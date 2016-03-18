@@ -10,10 +10,10 @@
     </style>
 
 
-
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="actionMenuTextColor">@android:color/white</item> <!--  敲定颜色-->
     </style>
 
 
