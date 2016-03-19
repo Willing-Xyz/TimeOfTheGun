@@ -1,7 +1,5 @@
 package com.willing.android.timeofgun.utils;
 
-import android.util.Log;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,7 +34,7 @@ public class DateUtils {
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
-
+        cal.set(Calendar.MILLISECOND, 0);
 
         return cal.getTimeInMillis();
     }
@@ -50,6 +48,7 @@ public class DateUtils {
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
 
 
         return cal.getTimeInMillis();
@@ -180,6 +179,7 @@ public class DateUtils {
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
 
 
         return cal.getTimeInMillis();
@@ -194,6 +194,7 @@ public class DateUtils {
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
 
 
         return cal.getTimeInMillis();
@@ -207,8 +208,7 @@ public class DateUtils {
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
-
-        Log.i("test", "month begin:" + formatDate(cal.getTimeInMillis()));
+        cal.set(Calendar.MILLISECOND, 0);
 
         return cal.getTimeInMillis();
     }
@@ -223,8 +223,9 @@ public class DateUtils {
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
 
-        Log.i("test", "month end:" + formatDate(cal.getTimeInMillis()));
+
 
         return cal.getTimeInMillis();
     }
@@ -239,7 +240,7 @@ public class DateUtils {
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
-
+        cal.set(Calendar.MILLISECOND, 0);
 
         return cal.getTimeInMillis();
     }
@@ -253,6 +254,7 @@ public class DateUtils {
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
 
 
         return cal.getTimeInMillis();

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.willing.android.timeofgun.event.AddCatelogEvent;
 import com.willing.android.timeofgun.event.AddEventEvent;
@@ -180,6 +181,8 @@ public class DbHelper extends SQLiteOpenHelper{
             values.put(DbHelper.STOP_TIME, events.get(i).getStopTime());
             values.put(DbHelper.CATELOG_ID, events.get(i).getCatelogId());
 
+            Log.i("test", "add " + events.get(i).getStartTime() + ", " + events.get(i).getStopTime());
+
             db.insert(DbHelper.MAIN_TABLE_NAME, null, values);
         }
         db.close();
@@ -212,8 +215,11 @@ public class DbHelper extends SQLiteOpenHelper{
                 + " where " + START_TIME + " >= " + startDate;
 
         String sql = "select * from " + "(" + largeStartDateSql + ")"
-                + " where " + STOP_TIME + " < " + stopDate
+                + " where " + STOP_TIME + " <= " + stopDate
                 + ";";
+
+
+        Log.i("test", "query: " + startDate + ", " + stopDate);
 
         return db.rawQuery(sql, null);
     }
