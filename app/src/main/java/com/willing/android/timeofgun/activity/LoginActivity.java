@@ -11,6 +11,11 @@ import android.widget.Toast;
 
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.model.User;
+import com.willing.android.timeofgun.utils.Utils;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import cn.bmob.v3.listener.SaveListener;
 
@@ -62,6 +67,17 @@ public class LoginActivity extends AppCompatActivity{
 
                 User user = new User();
                 user.setUsername(userName);
+                MessageDigest digest = null;
+                try {
+                    digest = MessageDigest.getInstance("SHA1");
+                    digest.update(password.getBytes("UTF-8"));
+                    password = Utils.byteArrayToHex(digest.digest());
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
                 user.setPassword(password);
                 user.login(LoginActivity.this, new SaveListener() {
                     @Override

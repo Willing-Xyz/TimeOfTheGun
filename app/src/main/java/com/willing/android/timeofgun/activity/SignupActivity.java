@@ -11,6 +11,11 @@ import android.widget.Toast;
 
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.model.User;
+import com.willing.android.timeofgun.utils.Utils;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import cn.bmob.v3.listener.SaveListener;
 
@@ -68,7 +73,15 @@ public class SignupActivity extends AppCompatActivity{
 
                     User user = new User();
                     user.setUsername(userName);
-                    // TODO: 2016/3/13 密码计算散列值后再传递
+                    try {
+                        MessageDigest digest = MessageDigest.getInstance("SHA1");
+                        digest.update(password.getBytes("UTF-8"));
+                        password = Utils.byteArrayToHex(digest.digest());
+                    } catch (NoSuchAlgorithmException e) {
+                        // nothing
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     user.setPassword(password);
                     user.setEmail(email);
 
@@ -76,6 +89,8 @@ public class SignupActivity extends AppCompatActivity{
                         @Override
                         public void onSuccess() {
                             Toast.makeText(SignupActivity.this, R.string.signup_success, Toast.LENGTH_SHORT).show();
+
+                            // todo 注册成功，上传数据到服务器
 
                             Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -95,4 +110,6 @@ public class SignupActivity extends AppCompatActivity{
             }
         });
     }
+
+
 }
