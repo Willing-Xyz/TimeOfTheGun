@@ -18,6 +18,7 @@ import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.Event;
 import com.willing.android.timeofgun.model.EventAndCatelog;
 import com.willing.android.timeofgun.utils.DateUtils;
+import com.willing.android.timeofgun.utils.DbHelper;
 import com.willing.android.timeofgun.utils.EventUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,6 +43,8 @@ public class ModifyEventActivity extends AppCompatActivity
     private Button mStopTimeView;
 
     private TextView mInfoView;
+
+    private Button mDeleteEvent;
 
     private EventAndCatelog mEvent;
 
@@ -75,6 +78,7 @@ public class ModifyEventActivity extends AppCompatActivity
         mStopTimeView = (Button) findViewById(R.id.bt_stopTime);
 
         mInfoView = (TextView) findViewById(R.id.info);
+        mDeleteEvent = (Button) findViewById(R.id.delete_event);
 
         mEvent = getIntent().getParcelableExtra(EXTRA_EVENT);
         mCatelogNameView.setText(mEvent.getCatelog().getName());
@@ -156,6 +160,15 @@ public class ModifyEventActivity extends AppCompatActivity
                         .setIs24HourTime(true)
                         .build()
                         .show();
+            }
+        });
+        mDeleteEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DbHelper.deleteEvent(ModifyEventActivity.this, mEvent.getId());
+
+                finish();
             }
         });
     }

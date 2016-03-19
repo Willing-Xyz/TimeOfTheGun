@@ -296,4 +296,13 @@ public class DbHelper extends SQLiteOpenHelper{
 
         EventBus.getDefault().post(new UpdateEventEvent());
     }
+
+    public static void deleteEvent(Context context, int id)
+    {
+        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+
+        db.delete(MAIN_TABLE_NAME, BaseColumns._ID + "=" + id, null);
+
+        db.close();
+    }
 }

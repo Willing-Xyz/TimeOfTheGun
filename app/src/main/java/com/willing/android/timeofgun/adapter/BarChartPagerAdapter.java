@@ -45,7 +45,7 @@ public class BarChartPagerAdapter extends PagerAdapter
     private HashMap<Integer, BarChart> mBarChartMap;
     private static final String[] mWeeks = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
     private static final String[] mMonths = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
-            "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"};
+            "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
     private static final String[] mYears = {"1月", "2月", "3月","4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"};
 
     public BarChartPagerAdapter(Context context)
