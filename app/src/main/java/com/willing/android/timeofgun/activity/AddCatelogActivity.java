@@ -10,13 +10,8 @@ import android.widget.Toast;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.model.Catelog;
-import com.willing.android.timeofgun.model.CatelogBmob;
-import com.willing.android.timeofgun.model.User;
 import com.willing.android.timeofgun.utils.CatelogUtils;
 import com.willing.android.timeofgun.utils.DbHelper;
-
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.listener.SaveListener;
 
 
 /**
@@ -93,34 +88,14 @@ public class AddCatelogActivity extends AppCompatActivity
 
             final long catelogId = System.currentTimeMillis();
             final Catelog catelog = new Catelog(name, mCatelogColor, catelogId);
-            // 保存到本地
-            CatelogUtils.addCatelogToLocal(AddCatelogActivity.this, catelog);
-            // 保存到服务器
-            User user = BmobUser.getCurrentUser(this, User.class);
-            if (user != null) {
-                CatelogBmob catelogBmob = new CatelogBmob();
-                catelogBmob.setCatelogColor(mCatelogColor);
-                catelogBmob.setCatelogName(name);
-                catelogBmob.setUserId(user.getObjectId());
-                catelogBmob.setCatelogId(catelogId);
 
-                catelogBmob.save(this, new SaveListener() {
-                    @Override
-                    public void onSuccess() {
+            new Thread(){
+                @Override
+                public void run() {
+                    CatelogUtils.addCatelog(AddCatelogActivity.this, catelog);
+                }
+            }.start();
 
-                    }
-
-                    @Override
-                    public void onFailure(int i, String s) {
-
-                        CatelogUtils.addCatelogForServer(AddCatelogActivity.this, catelog, CatelogUtils.TYPE_ADD);
-                    }
-                });
-            }
-            else
-            {
-                CatelogUtils.addCatelogForServer(AddCatelogActivity.this, catelog, CatelogUtils.TYPE_ADD);
-            }
 
             finish();
         }

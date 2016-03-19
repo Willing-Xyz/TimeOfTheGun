@@ -17,6 +17,7 @@
             app:border_color="#00ff00"
             app:border_width="1dp"
             app:radius="40dp"
+            android:padding="10dp"
             android:layout_margin="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

@@ -7,16 +7,18 @@ import cn.bmob.v3.BmobObject;
  */
 public class CatelogBmob extends BmobObject
 {
-    private long catelogId;
+    public static final String USERID = "userId";
+
+    private Long catelogId;
     private String catelogName;
-    private int catelogColor;
+    private Integer catelogColor;
     private String userId;
 
-    public long getCatelogId() {
+    public Long getCatelogId() {
         return catelogId;
     }
 
-    public void setCatelogId(long catelogId) {
+    public void setCatelogId(Long catelogId) {
         this.catelogId = catelogId;
     }
 
@@ -28,11 +30,11 @@ public class CatelogBmob extends BmobObject
         this.catelogName = catelogName;
     }
 
-    public int getCatelogColor() {
+    public Integer getCatelogColor() {
         return catelogColor;
     }
 
-    public void setCatelogColor(int catelogColor) {
+    public void setCatelogColor(Integer catelogColor) {
         this.catelogColor = catelogColor;
     }
 

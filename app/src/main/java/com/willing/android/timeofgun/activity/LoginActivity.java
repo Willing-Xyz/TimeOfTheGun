@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.model.User;
+import com.willing.android.timeofgun.utils.BmobUtils;
 import com.willing.android.timeofgun.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
@@ -84,7 +85,17 @@ public class LoginActivity extends AppCompatActivity{
                     public void onSuccess() {
                         Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
 
-                        // TODO: 2016/3/15 处理未上传和未下载的数据
+                        // 传递NOUSER数据库的内容到服务器，并复制NOUSER数据库到USERID数据库，并清空NOUSER数据库.
+                        // 下载数据存储到数据库
+                        new Thread(){
+                            @Override
+                            public void run() {
+                                BmobUtils.uploadDatas(LoginActivity.this);
+                                BmobUtils.downloadDatas(LoginActivity.this);
+                                BmobUtils.moveDatas(LoginActivity.this);
+
+                            }
+                        }.start();
 
                         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

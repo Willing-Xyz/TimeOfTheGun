@@ -167,21 +167,20 @@ public class BarChartPagerAdapter extends PagerAdapter
                 startTime = DateUtils.getWeekBegin(cal.getTimeInMillis());
                 stopTime = DateUtils.getWeekEnd(cal.getTimeInMillis());
                 xValStr = mWeeks;
-                skipTime = 24 * 60 * 60 * 1000 - 1000;
+                skipTime = 24 * 60 * 60 * 1000 - 1;
                 break;
             case MONTH:
                 cal.add(Calendar.MONTH, index);
                 startTime = DateUtils.getMonthBegin(cal.getTimeInMillis());
                 stopTime = DateUtils.getMonthEnd(cal.getTimeInMillis());
                 xValStr = mMonths;
-                skipTime = 24 * 60 * 60 * 1000 - 1000;
+                skipTime = 24 * 60 * 60 * 1000 - 1;
                 break;
             case YEAR:
                 cal.add(Calendar.YEAR, index);
                 startTime = DateUtils.getYearBegin(cal.getTimeInMillis());
                 stopTime = DateUtils.getYearEnd(cal.getTimeInMillis());
                 xValStr = mYears;
-                skipTime = 24L * 60 * 60 * 1000 * 30 - 1000; // TODO: 2016/3/18
                 break;
         }
 
@@ -199,7 +198,14 @@ public class BarChartPagerAdapter extends PagerAdapter
 
 
         long curStartTime = startTime;
-        long curStopTime = startTime + skipTime;
+        long curStopTime;
+        if (mUnit == DateUnit.YEAR) {
+            curStopTime = DateUtils.getMonthEnd(curStartTime);
+        }
+        else
+        {
+            curStopTime = curStartTime + skipTime;
+        }
         float curCatelogTime = 0;
         float sumCatelogTime = 0;
         int curIndex = 0;
@@ -215,14 +221,26 @@ public class BarChartPagerAdapter extends PagerAdapter
                 {
                     yVals.add(new BarEntry(sumCatelogTime, curIndex++));
                     sumCatelogTime = 0;
-                    curStartTime = curStopTime + 1000;
-                    curStopTime = curStartTime + skipTime;
+                    curStartTime = curStopTime + 1;
+                    if (mUnit == DateUnit.YEAR) {
+                        curStopTime = DateUtils.getMonthEnd(curStartTime);
+                    }
+                    else
+                    {
+                        curStopTime = curStartTime + skipTime;
+                    }
                     continue;
                 }
 
                 yVals.add(new BarEntry(0, curIndex++));
                 curStartTime = curStopTime + 1;
-                curStopTime = curStartTime + skipTime;
+                if (mUnit == DateUnit.YEAR) {
+                    curStopTime = DateUtils.getMonthEnd(curStartTime);
+                }
+                else
+                {
+                    curStopTime = curStartTime + skipTime;
+                }
 
             }
             sumCatelogTime += curCatelogTime;

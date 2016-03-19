@@ -220,11 +220,11 @@ public class TimingFragment extends BaseFragment implements StartStopButton.Stat
             {
                 @Override
                 public void run() {
-                    // TODO: 2016/3/16 划分Event
                     Event event = new Event();
                     event.setStartTime(mStartTime.getTimeInMillis());
                     event.setStopTime(Calendar.getInstance().getTimeInMillis());
                     event.setCatelogId(mCatelog.getCatelogId());
+                    event.setEventId(System.currentTimeMillis());
                     EventUtils.addEvent(getActivity(), event);
                 }
             }.start();

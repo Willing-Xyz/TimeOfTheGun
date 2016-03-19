@@ -18,7 +18,6 @@ import com.willing.android.timeofgun.model.Catelog;
 import com.willing.android.timeofgun.model.Event;
 import com.willing.android.timeofgun.model.EventAndCatelog;
 import com.willing.android.timeofgun.utils.DateUtils;
-import com.willing.android.timeofgun.utils.DbHelper;
 import com.willing.android.timeofgun.utils.EventUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -166,7 +165,14 @@ public class ModifyEventActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-                DbHelper.deleteEvent(ModifyEventActivity.this, mEvent.getId());
+                new Thread(){
+                    @Override
+                    public void run() {
+
+                        EventUtils.deleteEvent(ModifyEventActivity.this, mEvent);
+                    }
+                }.start();
+
 
                 finish();
             }
@@ -198,6 +204,7 @@ public class ModifyEventActivity extends AppCompatActivity
             event.setStopTime(mEvent.getStopTime());
             event.setCatelogId(mEvent.getCatelog().getCatelogId());
             event.setId(mEvent.getId());
+            event.setEventId(mEvent.getEventId());
 
 
             new Thread()

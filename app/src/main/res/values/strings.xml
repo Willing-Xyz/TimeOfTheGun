@@ -65,4 +65,5 @@
     <string name="cancel">取消</string>
     <string name="modify_event">修改事件</string>
     <string name="delete_event">删除事件</string>
+    <string name="user_info">用户信息</string>
 </resources>

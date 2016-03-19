@@ -12,6 +12,7 @@ public class EventAndCatelog implements Parcelable
     private long stopTime;
     private int id;
     private Catelog catelog;
+    private long eventId;
 
     public int getId()
     {
@@ -84,4 +85,11 @@ public class EventAndCatelog implements Parcelable
         }
     };
 
+    public void setEventId(long eventId) {
+        this.eventId = eventId;
+    }
+
+    public long getEventId() {
+        return eventId;
+    }
 }

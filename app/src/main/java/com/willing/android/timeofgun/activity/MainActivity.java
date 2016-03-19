@@ -29,6 +29,8 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.bmob.v3.BmobUser;
+
 /**
  *
  */
@@ -75,14 +77,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     private void initView() {
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         mNavigation = (NavigationView) findViewById(R.id.navigation);
         mDrawer = (DrawerLayout) findViewById(R.id.drawerLayout);
-        mUserPic = (CircleImageView) mNavigation.getHeaderView(0).findViewById(R.id.userPic);
-        mUserName = (TextView) mNavigation.getHeaderView(0).findViewById(R.id.userName);
+//        mUserPic = (CircleImageView) mNavigation.getHeaderView(0).findViewById(R.id.userPic);
+//        mUserName = (TextView) mNavigation.getHeaderView(0).findViewById(R.id.userName);
+        View view = mNavigation.inflateHeaderView(R.layout.navigation_header);
+        mUserPic = (CircleImageView) view.findViewById(R.id.userPic);
+        mUserName = (TextView) view.findViewById(R.id.userName);
 
         setSupportActionBar(mToolBar);
 
@@ -92,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupListener() {
 
-        mDrawer.addDrawerListener(mDrawerToggle);
+        mDrawer.setDrawerListener(mDrawerToggle);
+//        mDrawer.addDrawerListener(mDrawerToggle);
         mNavigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -136,6 +140,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        BmobUser user = BmobUser.getCurrentUser(this);
+        if (user != null) {
+            mUserName.setText(user.getUsername());
+            // TODO: 2016/3/19 下载并显示头像
+        }
+    }
 
     private String getTagByMenuId(int id) {
         String tag = null;

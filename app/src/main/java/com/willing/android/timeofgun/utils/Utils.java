@@ -1,13 +1,21 @@
 package com.willing.android.timeofgun.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import java.io.Closeable;
 import java.io.IOException;
+
+import cn.bmob.v3.BmobUser;
 
 /**
  * Created by Willing on 2016/3/15.
  */
 public class Utils
 {
+    public static final String NOUSER = "nouser";
+
     public static void closeIO(Closeable io)
     {
         try {
@@ -17,6 +25,12 @@ public class Utils
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        return ni != null && ni.isConnectedOrConnecting();
     }
 
     public static String byteArrayToHex(byte[] byteArray) {
@@ -42,5 +56,18 @@ public class Utils
         // 字符数组组合成字符串返回
 
         return new String(resultCharArray);
+    }
+
+    public static String getDbName(Context context)
+    {
+        BmobUser user = BmobUser.getCurrentUser(context);
+        if (user == null)
+        {
+            return NOUSER;
+        }
+        else
+        {
+            return user.getObjectId();
+        }
     }
 }

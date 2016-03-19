@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.model.User;
+import com.willing.android.timeofgun.utils.BmobUtils;
 import com.willing.android.timeofgun.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
@@ -90,7 +91,14 @@ public class SignupActivity extends AppCompatActivity{
                         public void onSuccess() {
                             Toast.makeText(SignupActivity.this, R.string.signup_success, Toast.LENGTH_SHORT).show();
 
-                            // todo 注册成功，上传数据到服务器
+                            // 注册成功后，会自动登录。因此传递NOUSER数据库的内容到服务器，并复制NOUSER数据库到USERID数据库，并清空NOUSER数据库.
+                            new Thread(){
+                                @Override
+                                public void run() {
+                                    BmobUtils.uploadDatas(SignupActivity.this);
+                                    BmobUtils.moveDatas(SignupActivity.this);
+                                }
+                            }.start();
 
                             Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

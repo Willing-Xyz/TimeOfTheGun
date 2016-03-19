@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 import com.willing.android.timeofgun.event.AddCatelogEvent;
 import com.willing.android.timeofgun.event.AddEventEvent;
@@ -14,18 +13,20 @@ import com.willing.android.timeofgun.event.DeleteCatelogEvent;
 import com.willing.android.timeofgun.event.DeleteEventEvent;
 import com.willing.android.timeofgun.event.UpdateEventEvent;
 import com.willing.android.timeofgun.model.Catelog;
+import com.willing.android.timeofgun.model.CatelogBmob;
 import com.willing.android.timeofgun.model.Event;
+import com.willing.android.timeofgun.model.EventBmob;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Willing on 2016/3/15.
  */
 public class DbHelper extends SQLiteOpenHelper{
 
-    private static final String DATABASE_NAME = "TimeOfGun";
     private static final int DATABASE_VERSION = 1;
 
     public static final String MAIN_TABLE_NAME = "main";
@@ -36,10 +37,11 @@ public class DbHelper extends SQLiteOpenHelper{
     public static final String CATELOG_ID = "catelog_id";
     public static final String CATELOG_NAME = "cagelogName";
     public static final String CATELOG_COLOR = "catelogColor";
+    public static final String EVENT_ID = "eventId";
 
-    public DbHelper(Context context)
+    public DbHelper(Context context, String name)
     {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, name, null, DATABASE_VERSION);
     }
 
     @Override
@@ -47,9 +49,10 @@ public class DbHelper extends SQLiteOpenHelper{
         String mainTable = "CREATE TABLE IF NOT EXISTS " + MAIN_TABLE_NAME
                 + " ("
                 + BaseColumns._ID + " integer primary key, "
-                + START_TIME + " integer, "
+                + START_TIME + " integer , "
                 + STOP_TIME + " integer, "
-                + CATELOG_ID + " integer, "
+                + CATELOG_ID + " integer , "
+                + EVENT_ID + " integer unique, "
                 + "foreign key(" + CATELOG_ID + ") references " + CATELOG_TABLE_NAME + "(" + CATELOG_ID + ")"
                 + ");";
 
@@ -63,7 +66,7 @@ public class DbHelper extends SQLiteOpenHelper{
                 + BaseColumns._ID + " integer primary key, "
                 + CATELOG_NAME + " text unique not null, "
                 + CATELOG_COLOR + " integer not null, "
-                + CATELOG_ID + " integer not null "
+                + CATELOG_ID + " integer not null unique "
                 + " );";
         db.execSQL(catelogTable);
 
@@ -74,10 +77,15 @@ public class DbHelper extends SQLiteOpenHelper{
 
     }
 
-    // 获取所有的Catelog
     public static Cursor getAllCatelog(Context context)
     {
-        DbHelper helper = new DbHelper(context);
+        return getAllCatelog(context, Utils.getDbName(context));
+    }
+
+    // 获取所有的Catelog
+    public static Cursor getAllCatelog(Context context, String name)
+    {
+        DbHelper helper = new DbHelper(context, name);
         SQLiteDatabase db = helper.getReadableDatabase();
         String[] columns = new String[]{
                 BaseColumns._ID,
@@ -93,7 +101,7 @@ public class DbHelper extends SQLiteOpenHelper{
     public static boolean isCatelogNameExisted(Context context, String name)
     {
         // 检查是否在数据库中存在
-        DbHelper helper = new DbHelper(context);
+        DbHelper helper = new DbHelper(context, Utils.getDbName(context));
         SQLiteDatabase db = helper.getReadableDatabase();
 
         Cursor cursor = db.query(DbHelper.CATELOG_TABLE_NAME, new String[]{BaseColumns._ID},
@@ -108,8 +116,31 @@ public class DbHelper extends SQLiteOpenHelper{
         return isExisted;
     }
 
+    public static void addCatelog(Context context, String name, Cursor cursor)
+    {
+        SQLiteDatabase db = new DbHelper(context,name).getWritableDatabase();
+
+        db.beginTransaction();
+        try
+        {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext())
+            {
+                ContentValues values = new ContentValues(3);
+                values.put(CATELOG_NAME, cursor.getString(cursor.getColumnIndex(CATELOG_NAME)));
+                values.put(CATELOG_COLOR, cursor.getInt(cursor.getColumnIndex(CATELOG_COLOR)));
+                values.put(CATELOG_ID, cursor.getLong(cursor.getColumnIndex(CATELOG_ID)));
+                db.insert(CATELOG_TABLE_NAME, null, values);
+            }
+            db.setTransactionSuccessful();
+        }
+        finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
     public static void addCatelog(Context context, Catelog catelog) {
-        DbHelper helper = new DbHelper(context);
+        DbHelper helper = new DbHelper(context, Utils.getDbName(context));
         SQLiteDatabase db = helper.getWritableDatabase();
 
         db.insert(CATELOG_TABLE_NAME, null, getCatelogContentValues(catelog));
@@ -146,7 +177,7 @@ public class DbHelper extends SQLiteOpenHelper{
     public static Catelog findAnyCatelogFromDb(Context context)
     {
 
-        DbHelper helper = new DbHelper(context);
+        DbHelper helper = new DbHelper(context, Utils.getDbName(context));
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.query(DbHelper.CATELOG_TABLE_NAME,
                 new String[]{BaseColumns._ID, DbHelper.CATELOG_NAME, DbHelper.CATELOG_COLOR, DbHelper.CATELOG_ID},
@@ -164,24 +195,44 @@ public class DbHelper extends SQLiteOpenHelper{
         return catelog;
     }
 
+    public static void addEvent(Context context, String dbName, Cursor cursor) {
+
+        SQLiteDatabase db = new DbHelper(context, dbName).getWritableDatabase();
+
+        db.beginTransaction();
+        try
+        {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext())
+            {
+                ContentValues values = new ContentValues(3);
+                values.put(START_TIME, cursor.getLong(cursor.getColumnIndex(START_TIME)));
+                values.put(STOP_TIME, cursor.getLong(cursor.getColumnIndex(STOP_TIME)));
+                values.put(CATELOG_ID, cursor.getLong(cursor.getColumnIndex(CATELOG_ID)));
+                values.put(EVENT_ID, cursor.getLong(cursor.getColumnIndex(EVENT_ID)));
+                db.insert(MAIN_TABLE_NAME, null, values);
+            }
+            db.setTransactionSuccessful();
+        }
+        finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
     // 增加事件
     public static void addEvent(Context context, Event event) {
 
-        long startTime = event.getStartTime();
-        long stopTime = event.getStopTime();
-        long catelogId = event.getCatelogId();
+        ArrayList<Event> events = partitionEvent(event);
 
-        ArrayList<Event> events = partitionEvent(startTime, stopTime, catelogId);
-
-        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+        SQLiteDatabase db = new DbHelper(context, Utils.getDbName(context)).getWritableDatabase();
 
         for (int i = 0; i < events.size(); ++i) {
             ContentValues values = new ContentValues();
             values.put(DbHelper.START_TIME, events.get(i).getStartTime());
             values.put(DbHelper.STOP_TIME, events.get(i).getStopTime());
             values.put(DbHelper.CATELOG_ID, events.get(i).getCatelogId());
+            values.put(EVENT_ID, events.get(i).getEventId());
 
-            Log.i("test", "add " + events.get(i).getStartTime() + ", " + events.get(i).getStopTime());
 
             db.insert(DbHelper.MAIN_TABLE_NAME, null, values);
         }
@@ -190,23 +241,25 @@ public class DbHelper extends SQLiteOpenHelper{
         EventBus.getDefault().postSticky(new AddEventEvent());
     }
 
-    private static ArrayList<Event> partitionEvent(long startTime, long stopTime, long catelogId) {
+    private static ArrayList<Event> partitionEvent(Event event) {
         ArrayList<Event> events = new ArrayList<>();
 
+        long startTime = event.getStartTime();
         long curStopTime = DateUtils.getDayEnd(startTime);
-        while (curStopTime < stopTime)
+        long eventId = event.getEventId();
+        while (curStopTime < event.getStopTime())
         {
-            events.add(new Event(startTime, curStopTime, catelogId));
-            startTime = curStopTime + 1000;
+            events.add(new Event(startTime, curStopTime,event.getCatelogId(), eventId++));
+            startTime = curStopTime + 1;
             curStopTime = DateUtils.getDayEnd(startTime);
         }
-        events.add(new Event(startTime, stopTime, catelogId));
+        events.add(new Event(startTime, event.getStopTime(), event.getCatelogId(), eventId));
 
         return events;
     }
 
     public static Cursor queryEvent(Context context, long startDate, long stopDate) {
-        DbHelper helper = new DbHelper(context);
+        DbHelper helper = new DbHelper(context, Utils.getDbName(context));
         SQLiteDatabase db = helper.getReadableDatabase();
 
         String largeStartDateSql = "select * from "
@@ -219,14 +272,13 @@ public class DbHelper extends SQLiteOpenHelper{
                 + ";";
 
 
-        Log.i("test", "query: " + startDate + ", " + stopDate);
 
         return db.rawQuery(sql, null);
     }
 
     public static Cursor queryEventByCatelog(Context context, long startDate, long stopDate,  long catelogId)
     {
-        DbHelper helper = new DbHelper(context);
+        DbHelper helper = new DbHelper(context, Utils.getDbName(context));
         SQLiteDatabase db = helper.getReadableDatabase();
 
         String largeStartDateSql = "select * from "
@@ -243,7 +295,7 @@ public class DbHelper extends SQLiteOpenHelper{
     }
 
     public static void updateCatelog(Context context, Catelog catelog) {
-        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+        SQLiteDatabase db = new DbHelper(context, Utils.getDbName(context)).getWritableDatabase();
 
         ContentValues cateVals = new ContentValues();
 
@@ -258,7 +310,7 @@ public class DbHelper extends SQLiteOpenHelper{
     // 删除类别并删除相关联的事件
     public static void deleteCatelogs(Context context, ArrayList<Long> catelogs) {
 
-        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+        SQLiteDatabase db = new DbHelper(context, Utils.getDbName(context)).getWritableDatabase();
 
         for (int i = 0; i < catelogs.size(); ++i)
         {
@@ -271,7 +323,7 @@ public class DbHelper extends SQLiteOpenHelper{
 
     public static void deleteEventByCatelogId(Context context, long catelogId)
     {
-        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+        SQLiteDatabase db = new DbHelper(context, Utils.getDbName(context)).getWritableDatabase();
 
         db.delete(MAIN_TABLE_NAME, CATELOG_ID + "=?", new String[]{catelogId + ""});
         EventBus.getDefault().post(new DeleteEventEvent());
@@ -280,15 +332,16 @@ public class DbHelper extends SQLiteOpenHelper{
 
     public static void updateEvent(Context context, Event event) {
 
-        ArrayList<Event> events = partitionEvent(event.getStartTime(), event.getStopTime(), event.getCatelogId());
+        ArrayList<Event> events = partitionEvent(event);
 
-        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+        SQLiteDatabase db = new DbHelper(context, Utils.getDbName(context)).getWritableDatabase();
 
         for (int i = 0; i < events.size(); ++i) {
             ContentValues values = new ContentValues();
             values.put(START_TIME, events.get(i).getStartTime());
             values.put(STOP_TIME, events.get(i).getStopTime());
             values.put(CATELOG_ID, events.get(i).getCatelogId());
+            values.put(EVENT_ID, events.get(i).getEventId());
 
             db.update(MAIN_TABLE_NAME, values, BaseColumns._ID + "=" + event.getId(), null);
         }
@@ -299,10 +352,90 @@ public class DbHelper extends SQLiteOpenHelper{
 
     public static void deleteEvent(Context context, int id)
     {
-        SQLiteDatabase db = new DbHelper(context).getWritableDatabase();
+        SQLiteDatabase db = new DbHelper(context, Utils.getDbName(context)).getWritableDatabase();
 
         db.delete(MAIN_TABLE_NAME, BaseColumns._ID + "=" + id, null);
 
         db.close();
+    }
+    public static Cursor queryAllEvent(Context context)
+    {
+        return queryAllEvent(context, Utils.getDbName(context));
+    }
+
+    public static Cursor queryAllEvent(Context context, String name) {
+
+        SQLiteDatabase db = new DbHelper(context, name).getReadableDatabase();
+
+        String sql = "select " + START_TIME + "," + STOP_TIME + "," + MAIN_TABLE_NAME + "." + CATELOG_ID + "," + EVENT_ID
+                + " from "
+                + MAIN_TABLE_NAME + " inner join " + CATELOG_TABLE_NAME + " on "
+                + MAIN_TABLE_NAME + "." + CATELOG_ID + "=" + CATELOG_TABLE_NAME + "." + CATELOG_ID;
+
+        return db.rawQuery(sql, null);
+    }
+
+    public static void clearEvent(Context context, String name) {
+
+        SQLiteDatabase db = new DbHelper(context, name).getWritableDatabase();
+
+        db.delete(MAIN_TABLE_NAME, null, null);
+        db.close();
+    }
+
+    public static void clearCatelog(Context context, String name) {
+        SQLiteDatabase db = new DbHelper(context, name).getWritableDatabase();
+
+        db.delete(CATELOG_TABLE_NAME, null, null);
+        db.close();
+    }
+
+    public static void addCatelogs(Context context, List<CatelogBmob> list) {
+        SQLiteDatabase db = new DbHelper(context, Utils.getDbName(context)).getWritableDatabase();
+
+        db.beginTransaction();
+        try
+        {
+            CatelogBmob catelog;
+            for (int i = 0; i < list.size(); ++i)
+            {
+                catelog = list.get(i);
+                ContentValues values = new ContentValues(3);
+                values.put(CATELOG_NAME, catelog.getCatelogName());
+                values.put(CATELOG_COLOR, catelog.getCatelogColor());
+                values.put(CATELOG_ID, catelog.getCatelogId());
+                db.insert(CATELOG_TABLE_NAME, null, values);
+            }
+            db.setTransactionSuccessful();
+        }
+        finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public static void addEvents(Context context, List<EventBmob> list) {
+        SQLiteDatabase db = new DbHelper(context, Utils.getDbName(context)).getWritableDatabase();
+
+        db.beginTransaction();
+        try
+        {
+            EventBmob event = null;
+            for (int i = 0; i < list.size(); ++i)
+            {
+                event = list.get(i);
+                ContentValues values = new ContentValues(4);
+                values.put(START_TIME, event.getStartTime());
+                values.put(STOP_TIME, event.getStopTime());
+                values.put(CATELOG_ID, event.getCatelogId());
+                values.put(EVENT_ID, event.getEventId());
+                db.insert(MAIN_TABLE_NAME, null, values);
+            }
+            db.setTransactionSuccessful();
+        }
+        finally {
+            db.endTransaction();
+            db.close();
+        }
     }
 }

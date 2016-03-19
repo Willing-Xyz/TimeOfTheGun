@@ -185,6 +185,7 @@ public class TimeLineListAdapter extends BaseAdapter{
             event.setId(cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)));
             event.setStartTime(cursor.getLong(cursor.getColumnIndex(DbHelper.START_TIME)));
             event.setStopTime(cursor.getLong(cursor.getColumnIndex(DbHelper.STOP_TIME)));
+            event.setEventId(cursor.getLong(cursor.getColumnIndex(DbHelper.EVENT_ID)));
             Catelog catelog = new Catelog();
             catelog.setCatelogId(cursor.getLong(cursor.getColumnIndex(DbHelper.CATELOG_ID)));
             catelog.setColor(cursor.getInt(cursor.getColumnIndex(DbHelper.CATELOG_COLOR)));

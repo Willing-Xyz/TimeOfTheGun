@@ -10,13 +10,8 @@ import android.widget.Toast;
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.model.Catelog;
-import com.willing.android.timeofgun.model.CatelogBmob;
-import com.willing.android.timeofgun.model.User;
 import com.willing.android.timeofgun.utils.CatelogUtils;
 import com.willing.android.timeofgun.utils.DbHelper;
-
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.listener.SaveListener;
 
 /**
  * Created by Willing on 2016/3/18.
@@ -91,34 +86,14 @@ public class ModifyCatelogActivity extends AppCompatActivity
 
             mCatelog.setName(name);
 
-            // 保存到本地
-            CatelogUtils.updateCatelogToLocal(ModifyCatelogActivity.this, mCatelog);
-            // 保存到服务器
-            User user = BmobUser.getCurrentUser(this, User.class);
-            if (user != null) {
-                CatelogBmob catelogBmob = new CatelogBmob();
-                catelogBmob.setCatelogColor(mCatelog.getColor());
-                catelogBmob.setCatelogName(name);
-                catelogBmob.setUserId(user.getObjectId());
-                catelogBmob.setCatelogId(mCatelog.getCatelogId());
+            new Thread(){
+                @Override
+                public void run() {
 
-                catelogBmob.save(this, new SaveListener() {
-                    @Override
-                    public void onSuccess() {
+                    CatelogUtils.updateCatelog(ModifyCatelogActivity.this, mCatelog);
+                }
+            }.start();
 
-                    }
-
-                    @Override
-                    public void onFailure(int i, String s) {
-
-                        CatelogUtils.addCatelogForServer(ModifyCatelogActivity.this, mCatelog, CatelogUtils.TYPE_UPDATE);
-                    }
-                });
-            }
-            else
-            {
-                CatelogUtils.addCatelogForServer(ModifyCatelogActivity.this, mCatelog, CatelogUtils.TYPE_UPDATE);
-            }
 
             finish();
         }

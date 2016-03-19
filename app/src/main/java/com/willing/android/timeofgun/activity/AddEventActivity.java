@@ -193,6 +193,7 @@ public class AddEventActivity extends AppCompatActivity
             event.setCatelogId(mCatelog.getCatelogId());
             event.setStopTime(mStopTime);
             event.setStartTime(mStartTime);
+            event.setEventId(System.currentTimeMillis());
 
             new Thread()
             {

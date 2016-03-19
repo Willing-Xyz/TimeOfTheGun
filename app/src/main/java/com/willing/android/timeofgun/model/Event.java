@@ -9,20 +9,23 @@ public class Event
     private long stopTime;
     private long catelogId;
     private int id;
+    private long eventId;
 
     public Event()
     {}
 
-    public Event(long startTime, long stopTime, long catelogId) {
+    public Event(long startTime, long stopTime, long catelogId, long eventId) {
         this.startTime = startTime;
         this.stopTime = stopTime;
         this.catelogId = catelogId;
+        this.eventId = eventId;
     }
 
-    public Event(long startTime, long stopTime, long catelogId, int id) {
+    public Event(long startTime, long stopTime, long catelogId, long eventId, int id) {
         this.startTime = startTime;
         this.stopTime = stopTime;
         this.catelogId = catelogId;
+        this.eventId = eventId;
         this.id = id;
     }
 
@@ -58,5 +61,13 @@ public class Event
 
     public void setCatelogId(long catelogId) {
         this.catelogId = catelogId;
+    }
+
+    public long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(long eventId) {
+        this.eventId = eventId;
     }
 }

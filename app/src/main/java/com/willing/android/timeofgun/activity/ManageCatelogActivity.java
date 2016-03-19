@@ -23,6 +23,7 @@ import com.willing.android.timeofgun.R;
 import com.willing.android.timeofgun.adapter.CatelogAdapter;
 import com.willing.android.timeofgun.event.DeleteCatelogEvent;
 import com.willing.android.timeofgun.model.Catelog;
+import com.willing.android.timeofgun.utils.CatelogUtils;
 import com.willing.android.timeofgun.utils.DbHelper;
 import com.willing.android.timeofgun.utils.LoadCatelogTask;
 
@@ -182,14 +183,21 @@ public class ManageCatelogActivity extends AppCompatActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             SparseBooleanArray checks = mCatelogListView.getCheckedItemPositions();
-                            ArrayList<Long> catelogs = new ArrayList<>();
+                            final ArrayList<Long> catelogs = new ArrayList<>();
                             Cursor cursor = null;
                             for (int i = 0; i < checks.size(); ++i) {
                                     cursor = (Cursor) mCatelogListView.getAdapter().getItem(checks.keyAt(i));
                                     catelogs.add(cursor.getLong(cursor.getColumnIndex(DbHelper.CATELOG_ID)));
                             }
 
-                            DbHelper.deleteCatelogs(ManageCatelogActivity.this, catelogs);
+                            new Thread(){
+                                @Override
+                                public void run() {
+
+                                    CatelogUtils.deleteCatelogs(ManageCatelogActivity.this, catelogs);
+                                }
+                            }.start();
+
 
                         }
                     });
