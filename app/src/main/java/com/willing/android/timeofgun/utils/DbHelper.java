@@ -269,6 +269,7 @@ public class DbHelper extends SQLiteOpenHelper{
 
         String sql = "select * from " + "(" + largeStartDateSql + ")"
                 + " where " + STOP_TIME + " <= " + stopDate
+                + " order by " + START_TIME
                 + ";";
 
 
