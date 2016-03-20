@@ -149,6 +149,10 @@ public class MainActivity extends AppCompatActivity {
             mUserName.setText(user.getUsername());
             // TODO: 2016/3/19 下载并显示头像
         }
+        else
+        {
+            mUserName.setText(R.string.no_login);
+        }
     }
 
     private String getTagByMenuId(int id) {

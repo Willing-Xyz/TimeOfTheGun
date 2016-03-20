@@ -174,6 +174,12 @@ public class DateUtils {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeInMillis);
 
+
+        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+        {
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+        }
+
         cal.setFirstDayOfWeek(Calendar.MONDAY);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -181,13 +187,17 @@ public class DateUtils {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-
         return cal.getTimeInMillis();
     }
 
     public static long getWeekEnd(long timeInMillis) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeInMillis);
+
+        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+        {
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+        }
 
         cal.setFirstDayOfWeek(Calendar.MONDAY);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
