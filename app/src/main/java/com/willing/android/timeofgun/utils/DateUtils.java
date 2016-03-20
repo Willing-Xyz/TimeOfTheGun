@@ -57,8 +57,6 @@ public class DateUtils {
     public static String createText(long startTime, long stopTime) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(formatDate(startTime)).append(",");
-
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(startTime);
         int hour = cal.get(Calendar.HOUR_OF_DAY);
