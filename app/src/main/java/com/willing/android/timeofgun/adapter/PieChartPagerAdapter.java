@@ -8,9 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.willing.android.timeofgun.event.UnitChangeEvent;
@@ -62,8 +64,11 @@ public class PieChartPagerAdapter extends PagerAdapter
         else {
             PieChart pieChart = new PieChart(mContext);
 
+            pieChart.setUsePercentValues(true);
             pieChart.setRotationEnabled(false);
             pieChart.setDescription("");
+            Legend l = pieChart.getLegend();
+            l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
 
             pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                 @Override
@@ -204,8 +209,11 @@ public class PieChartPagerAdapter extends PagerAdapter
         }
 
         PieDataSet dataSet = new PieDataSet(times, "类别");
+
         dataSet.setColors(colors);
         PieData data = new PieData(catelogs, dataSet);
+        data.setValueFormatter(new PercentFormatter());
+        data.setValueTextSize(11f);
 
         return data;
     }

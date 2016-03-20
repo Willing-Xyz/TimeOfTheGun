@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -89,4 +90,10 @@ public class StatisticCatelogFragment extends StatisticFragment{
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.stastistic_catelog);
+    }
 }

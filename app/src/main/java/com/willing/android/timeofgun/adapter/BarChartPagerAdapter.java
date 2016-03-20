@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -77,6 +78,11 @@ public class BarChartPagerAdapter extends PagerAdapter
             BarChart barChart = new BarChart(mContext);
             barChart.setDescription("");
             barChart.getAxisRight().setEnabled(false);
+            barChart.getAxisLeft().setAxisMinValue(0f);
+            XAxis xAxis = barChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setDrawGridLines(false);
+            xAxis.setSpaceBetweenLabels(2);
 
             barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                 @Override
@@ -259,6 +265,7 @@ public class BarChartPagerAdapter extends PagerAdapter
         sets.add(set);
 
         BarData data = new BarData(xVals, set);
+        data.setValueTextSize(10f);
 
         return data;
     }

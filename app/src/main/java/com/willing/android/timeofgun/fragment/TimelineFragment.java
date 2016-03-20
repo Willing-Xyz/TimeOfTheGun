@@ -97,7 +97,7 @@ public class TimelineFragment extends BaseFragment{
 
         String dateAndWeek = DateUtils.formatDateAndWeek(cal.getTimeInMillis());
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(dateAndWeek);
-
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.timeline);
     }
 
     @Override
