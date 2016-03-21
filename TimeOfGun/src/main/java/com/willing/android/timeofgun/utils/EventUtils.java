@@ -2,10 +2,13 @@ package com.willing.android.timeofgun.utils;
 
 import android.content.Context;
 
+import com.willing.android.timeofgun.event.UpdateEventEvent;
 import com.willing.android.timeofgun.model.Event;
 import com.willing.android.timeofgun.model.EventAndCatelog;
 import com.willing.android.timeofgun.model.EventBmob;
 import com.willing.android.timeofgun.model.User;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
@@ -179,5 +182,7 @@ public class EventUtils
         e.setStopTime(event.getStopTime());
         e.setCatelogId(event.getCatelog().getCatelogId());
         EventUtils.deleteEventToServer(context, e);
+
+        EventBus.getDefault().post(new UpdateEventEvent());
     }
 }

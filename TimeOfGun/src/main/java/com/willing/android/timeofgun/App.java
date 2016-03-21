@@ -47,7 +47,10 @@ public class App extends Application{
     public void onCreate() {
         super.onCreate();
 
+        // debug
         Bmob.initialize(this, "06d8fd4a25e1636b602397f71d281f57");
+        // release
+//        Bmob.initialize(this, "54ff894c23dc62a014df713cc3b043c1");
 
         BmobUser user = BmobUser.getCurrentUser(this);
         if (user != null && Utils.isNetworkConnected(this)) {

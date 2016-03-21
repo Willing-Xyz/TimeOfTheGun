@@ -342,7 +342,6 @@ public class DbHelper extends SQLiteOpenHelper{
             values.put(START_TIME, events.get(i).getStartTime());
             values.put(STOP_TIME, events.get(i).getStopTime());
             values.put(CATELOG_ID, events.get(i).getCatelogId());
-            values.put(EVENT_ID, events.get(i).getEventId());
 
             db.update(MAIN_TABLE_NAME, values, BaseColumns._ID + "=" + event.getId(), null);
         }

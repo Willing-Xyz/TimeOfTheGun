@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.update.BmobUpdateAgent;
 
 /**
  *
@@ -74,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
             fragmentManager.beginTransaction().add(R.id.fragment, timingFragment, TIMING_FRAGMENT).commit();
         }
+
+        // 检查更新
+        BmobUpdateAgent.silentUpdate(this);
     }
 
 
